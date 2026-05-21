@@ -668,6 +668,14 @@ input,select,textarea{font:inherit}
 .p-swatches{display:flex;gap:5px;margin-top:10px}
 .sw-dot{width:16px;height:16px;border-radius:var(--pill);border:2px solid var(--white);box-shadow:0 0 0 1px var(--hairline)}
 @media (max-width:980px){.products{grid-template-columns:1fr 1fr;gap:14px}}
+/* V1.5 · Mobile · stack the card foot so longer colour names (e.g. "Clay Terracotta") never collide with the price in a 2-up grid; tighten card padding + filter chips for the denser size-band / TOG / colour rows. */
+@media (max-width:520px){
+  .p-foot{flex-direction:column;align-items:flex-start;gap:5px}
+  .p-skucolour{font-size:11px}
+  .p-info{padding:14px 14px 18px}
+  .fchip{padding:7px 13px;font-size:11px}
+  .fchip-tog{min-width:54px;font-size:13px;padding:7px 13px}
+}
 
 /* FOUNDER VIDEO BLOCK */
 .founder-video{padding:var(--section-pad) 0;background:var(--paper)}
@@ -1023,7 +1031,6 @@ input,select,textarea{font:inherit}
 .fchip .fchip-dot.dot-sage{background:var(--sage)}
 .fchip .fchip-dot.dot-clay{background:var(--clay)}
 .fchip .fchip-dot.dot-oat{background:var(--oat-soft)}
-.fchip .fchip-dot.dot-blush{background:var(--blush)}
 .fchip .fchip-dot.dot-blush{background:var(--blush)}
 .fchip-tog{min-width:64px;justify-content:center;font-family:var(--font-display);font-size:14px;font-weight:500;letter-spacing:0;padding:8px 16px}
 .fchip-soon{font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--clay);background:var(--clay-mist);padding:2px 6px;border-radius:var(--pill);margin-left:2px}
