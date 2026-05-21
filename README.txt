@@ -8,7 +8,8 @@ Already here:
   - vercel.json   (serves the site at the root URL + security headers)
 
 You need to add (2 things I couldn't copy for you):
-  1. v2.html      — the site itself
+  1. index.html   — the site itself (your latest version; Vercel serves
+     a file named index.html automatically at the root URL)
   2. the hero video + poster (optional; without them the hero shows a
      placeholder, which is fine for a preview)
 
@@ -19,7 +20,7 @@ Open Terminal, paste this whole block, press Enter:
 
 SRC="/Users/tweenguyen/Desktop/TotnKids website"
 DEST="/Users/tweenguyen/Desktop/totnkids-deploy"
-cp "$SRC/v2.html" "$DEST/"
+cp "$SRC/index.html" "$DEST/"
 mkdir -p "$DEST/REFERENCE/Website photo "
 cp "$SRC/REFERENCE/Homepage video - Japanese baby waking up.mp4" "$DEST/REFERENCE/"
 cp "$SRC/REFERENCE/Website photo /3 Homepage.png" "$DEST/REFERENCE/Website photo /"
@@ -28,7 +29,7 @@ cp "$SRC/REFERENCE/Website photo /3 Homepage.png" "$DEST/REFERENCE/Website photo
 OPTION 2 — Finder (no Terminal)
 ----------------------------------------------------------------------
 1. Open the "TotnKids website" folder.
-2. Copy v2.html into this folder (totnkids-deploy). Keep the name v2.html.
+2. Copy index.html into this folder (totnkids-deploy). Keep the name index.html.
 3. (Optional, for the hero video) inside this folder create a folder named
    REFERENCE, and inside it another named "Website photo " (with a trailing
    space). Copy in:
@@ -43,7 +44,7 @@ THEN — publish
 2. Choose to deploy without Git (drag-and-drop / upload).
 3. Drag THIS folder (totnkids-deploy) in.
 4. Framework Preset: Other. Leave Build Command and Output Directory empty.
-5. Deploy. You'll get the live URL. vercel.json makes the site open at "/".
+5. Deploy. You'll get the live URL. index.html opens automatically at "/".
 
-To update later: replace v2.html in this folder with your newest version
+To update later: replace index.html in this folder with your newest version
 and deploy again.
