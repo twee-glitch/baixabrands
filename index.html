@@ -1684,7 +1684,6 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
     <div class="nav-left">
       <button class="icon-btn hamburger" onclick="openMobileNav()" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 17h18"/></svg></button>
       <a class="nav-link" onclick="goto('shop')">Shop</a>
-      <a class="nav-link" onclick="goto('range')">Full Range</a>
       <a class="nav-link" onclick="goto('bundle')">Build a Kit</a>
       <a class="nav-link" onclick="goto('gift')">Gift</a>
     </div>
@@ -1703,7 +1702,6 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <button class="icon-btn mn-close" onclick="closeMobileNav()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   <div class="mn-list">
     <a onclick="goto('shop');closeMobileNav()">Shop</a>
-    <a onclick="goto('range');closeMobileNav()">Full Range</a>
     <a onclick="goto('bundle');closeMobileNav()">Build a Kit</a>
     <a onclick="goto('gift');closeMobileNav()">Gift Shop</a>
     <a onclick="goto('tool');closeMobileNav()">What should my baby wear?</a>
@@ -2728,6 +2726,10 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
 </section>
 
 <!-- V1.4 · FULL RANGE · every roadmap SKU as a configure-and-add product, grouped by category. TOG is a priced variant. -->
+<!-- FULL RANGE PAGE · PARKED V1.5 (2026-05-21) · removed from nav/mobile/footer because it overlapped the new colour×TOG Shop wall.
+     Kept dormant (this markup + the rangeProducts array + renderRange() below) for a possible future "full collection / roadmap" page.
+     To revive: re-add the three "Full Range" links (top nav, mobile menu, footer) — they call goto('range').
+     Before reviving: reconcile rangeProducts prices with the Shop/PDP (e.g. Convertible was ~£48–£56 here vs £68 base). -->
 <section class="page" data-page="range">
   <div class="page-head">
     <div class="crumb"><a onclick="goto('home')">Home</a> · <strong>The Full Range</strong></div>
@@ -3019,7 +3021,6 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       <h5>Shop</h5>
       <ul>
         <li><a onclick="goto('shop')">All products</a></li>
-        <li><a onclick="goto('range')">The Full Range</a></li>
         <li><a onclick="goto('shop')">The Kits</a></li>
         <li><a onclick="goto('bundle')">Build a Kit</a></li>
         <li><a onclick="goto('subscribe')">Subscribe & Save</a></li>
