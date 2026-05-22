@@ -4636,7 +4636,12 @@ function renderByoGrid(){
   const list = byoCat === 'all' ? all : all.filter(p => p.cat === byoCat);
   if(list.length === 0){ grid.innerHTML = '<div class="byo-empty" style="grid-column:1/-1;">Nothing in this category yet.</div>'; return; }
   grid.innerHTML = list.map(p => {
-    const togBit = (p.tog && p.tog !== 'Kit' && p.tog !== 'Base layer' && p.tog !== 'Day layer') ? p.tog : (p.tog === 'Base layer' ? 'Base layer' : (p.tog === 'Day layer' ? 'Daywear' : ''));
+    // V1.6 · multi-TOG styles: show a TOG range + "from £X" (lowest TOG price), since the exact TOG is chosen in the kit sidebar. Single-TOG styles keep their exact label + price.
+    const byoMulti = SKU_TOGS[p.id] && !p.comingSoon && SKU_TOGS[p.id].length > 1;
+    const togBit = byoMulti
+      ? (SKU_TOGS[p.id][0] + '–' + SKU_TOGS[p.id][SKU_TOGS[p.id].length - 1] + ' TOG')
+      : ((p.tog && p.tog !== 'Kit' && p.tog !== 'Base layer' && p.tog !== 'Day layer') ? p.tog : (p.tog === 'Base layer' ? 'Base layer' : (p.tog === 'Day layer' ? 'Daywear' : '')));
+    const byoPriceHtml = byoMulti ? ('from £' + Math.min.apply(null, SKU_TOGS[p.id].map(t => togPrice(p, t)))) : ('£' + p.price);
     return '<article class="byo-card">'+
       '<div class="byo-card-img"><div class="ph '+p.ph+'"></div>'+
         '<button class="byo-add-btn" onclick="byoAdd(\''+p.id+'\')" aria-label="Add '+p.name+' to your kit"><span class="ba-full">+ Add to Baby’s Wardrobe</span><span class="ba-short">+ Add</span></button>'+
@@ -4646,7 +4651,7 @@ function renderByoGrid(){
         '<h5>'+p.name+'</h5>'+
         (togBit ? '<span class="byo-card-tog">'+togBit+'</span>' : '')+
         '<div class="byo-card-foot">'+
-          '<span class="byo-card-price">£'+p.price+'</span>'+
+          '<span class="byo-card-price">'+byoPriceHtml+'</span>'+
         '</div>'+
       '</div>'+
     '</article>';
