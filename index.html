@@ -674,10 +674,22 @@ input,select,textarea{font:inherit}
 .p-quickshop .qs-add:hover{background:var(--clay)}
 /* Touch · hide the quick-shop overlay entirely; cards stay clickable to PDP for full config */
 /* TOUCH · quickshop is permanently visible. The "hover to reveal" pattern doesn't work on phones, and hiding the feature loses a one-tap conversion lever for ~70% of traffic. */
+/* TOUCH · V1.6 · clean card + a bottom "Add" trigger that opens the quick-shop as a bottom sheet — no selectors over the photo. Same content + copy, presentation only. */
+.p-add{display:none}
 @media (hover: none){
-  .p-quickshop{opacity:1;transform:none;pointer-events:auto;position:static;margin-top:8px;box-shadow:none;background:transparent;padding:0}
-  .p-quickshop .qs-colours{display:none} /* swatches preview row above already shows colours */
+  .p-quickshop{display:none}
+  .p-add{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;margin-top:14px;padding:12px;background:var(--pine-deep);color:var(--cream-warm);border:none;border-radius:var(--pill);font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:0.04em;cursor:pointer}
+  .p-card.qs-open .p-quickshop{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:202;flex-direction:column;gap:14px;background:var(--paper);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:0 -8px 30px rgba(44,44,44,0.18);padding:18px 20px calc(22px + env(safe-area-inset-bottom));opacity:1;transform:none;pointer-events:auto;animation:psheetUp .3s var(--ease)}
+  .p-card.qs-open .p-quickshop::before{content:'';width:38px;height:4px;border-radius:var(--pill);background:var(--hairline);align-self:center}
+  .p-card.qs-open .p-quickshop .qs-sizes{gap:8px}
+  .p-card.qs-open .p-quickshop .qs-size{flex:1 0 28%;min-height:42px;font-size:13px}
+  .p-card.qs-open .p-quickshop .qs-colours{display:flex;gap:12px;justify-content:center;padding:2px 0}
+  .p-card.qs-open .p-quickshop .qs-colour{width:30px;height:30px}
+  .p-card.qs-open .p-quickshop .qs-add{min-height:50px;font-size:13px;padding:14px}
 }
+@keyframes psheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.psheet-ov{position:fixed;inset:0;background:rgba(44,44,44,0.45);z-index:201;opacity:0;pointer-events:none;transition:opacity .25s}
+.psheet-ov.open{opacity:1;pointer-events:auto}
 /* V1.3 · Resolve the duplication: on hover-capable devices, the popup carries the colour swatches, so hide the static dots in the card foot for cards that have a quick-shop. Touch devices (no popup) keep them visible as the only at-a-glance colour cue. */
 @media (hover: hover){.p-card:has(.p-quickshop) .p-swatches{display:none}}
 .p-info{padding:18px 20px 22px}
@@ -3293,6 +3305,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
 
 <!-- CART DRAWER · premium high-conversion -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="psheet-ov" id="pSheetOv" onclick="closeCardSheet()"></div>
 <aside class="cart-drawer" id="cartDrawer">
   <button class="cart-continue-mobile" onclick="closeCart()" aria-label="Continue shopping"><span aria-hidden="true">←</span> Continue shopping</button>
   <div class="cart-head">
@@ -3995,7 +4008,7 @@ function pCardHTML(p, skuTog, skuColour){
   // V1.4 · Tint the image by the card's colour so the wall looks varied before real photography lands.
   const phStyle = isSku ? ' style="background:linear-gradient(150deg, '+colourHex+'33, '+colourHex+')"' : '';
   // V1.3 · Quick-shop block · individual products only. SKU cards have a fixed colour (no colour picker), classic cards keep it.
-  let quickBtn;
+  let quickBtn; let sheetTrigger = '';
   if(p.comingSoon){
     quickBtn = '<button class="p-quick" onclick="event.stopPropagation();notifyMe(\''+p.id+'\',\''+p.name+'\')">Notify me when it ships</button>';
   } else if(p.cat === 'kit'){
@@ -4016,6 +4029,7 @@ function pCardHTML(p, skuTog, skuColour){
         '<button class="qs-add" onclick="event.stopPropagation();quickShopAdd(this,\''+p.id+'\')">+ Add to Baby&rsquo;s Wardrobe</button>'+
       '</div>';
     }
+    sheetTrigger = '<button class="p-add" onclick="event.stopPropagation();openCardSheet(this)">+ Add to Baby&rsquo;s Wardrobe</button>';
   }
   const ratingBlock = p.comingSoon
     ? '<div class="p-rating"><span class="p-soon-meta">In development · with our midwife collaborator</span></div>'
@@ -4028,7 +4042,7 @@ function pCardHTML(p, skuTog, skuColour){
     : '<div class="p-swatches">'+dots+'</div>';
   return '<article class="'+cardClass+'" onclick="'+onClick+'">'+
     '<div class="p-image"><div class="ph '+p.ph+'"'+phStyle+'><span class="ph-tag">'+p.tag+'</span><span class="ph-label">'+p.name+'</span></div>'+badge+'<button class="p-fav" onclick="event.stopPropagation();showToast(\'Saved for later\')">♡</button>'+quickBtn+'</div>'+
-    '<div class="p-info"><div class="p-cat">'+catLabel+'</div><h4>'+p.name+'</h4>'+qualityChips+ratingBlock+'<div class="p-foot">'+priceBlock+footRight+'</div></div>'+
+    '<div class="p-info"><div class="p-cat">'+catLabel+'</div><h4>'+p.name+'</h4>'+qualityChips+ratingBlock+'<div class="p-foot">'+priceBlock+footRight+'</div>'+sheetTrigger+'</div>'+
   '</article>';
 }
 // V1.3 · Coming-soon CTA · captures email for waitlist via the unified notify() system.
@@ -4056,12 +4070,27 @@ function quickShopAdd(btn, productId, skuTog, skuColour){
     const price = skuTog ? togPrice(p, skuTog) : p.price;
     const meta = (skuTog ? skuTog + ' TOG · ' : '') + size + ' · ' + skuColour;
     addToCart(productId, meta, true, null, price);
+    closeCardSheet();
     return;
   }
   const activeColour = card.querySelector('.qs-colour.active');
   const colour = activeColour ? activeColour.dataset.colour : 'Dusty Sage';
   const togBit = (p.tog && p.tog !== 'Kit' && p.tog !== 'Base layer' && p.tog !== 'Day layer') ? p.tog + ' · ' : '';
   addToCart(productId, togBit + size + ' · ' + colour);
+  closeCardSheet();
+}
+// V1.6 · mobile · present the per-card quick-shop as a bottom sheet on touch. Reuses the card's existing quick-shop content + copy; only the presentation changes.
+function openCardSheet(btn){
+  const card = btn.closest('.p-card'); if(!card) return;
+  document.querySelectorAll('.p-card.qs-open').forEach(c => c.classList.remove('qs-open'));
+  card.classList.add('qs-open');
+  const ov = document.getElementById('pSheetOv'); if(ov) ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCardSheet(){
+  document.querySelectorAll('.p-card.qs-open').forEach(c => c.classList.remove('qs-open'));
+  const ov = document.getElementById('pSheetOv'); if(ov) ov.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 /* V1.4 · FULL RANGE renderers · dedicated card so the shared pCardHTML / Shop / homepage stay untouched.
