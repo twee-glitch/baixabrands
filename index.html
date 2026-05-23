@@ -100,6 +100,7 @@ input,select,textarea{font:inherit}
 .icon-btn{width:2.75rem;height:2.75rem;border-radius:var(--pill);background:var(--white);display:inline-flex;align-items:center;justify-content:center;position:relative;color:var(--pine-deep);transition:all .3s var(--ease);box-shadow:var(--lift-1);border:none}
 .icon-btn:hover{background:var(--cream);color:var(--clay);transform:translateY(-2px);box-shadow:var(--lift-2)}
 .icon-btn svg{width:1.1875rem;height:1.1875rem;stroke:currentColor;fill:none;stroke-width:1.4}
+.nav-right .icon-btn[aria-label="Search"],.nav-right .icon-btn[aria-label="Account"]{display:none} /* mobile · keep the header to hamburger | logo | basket so the cart icon is uncrowded + always fits */
 /* V1.1 cart badge · a small clay dot when items present, no number, gentle pulse on add */
 .cart-badge{position:absolute;top:7px;right:7px;background:var(--clay);width:9px;height:9px;border-radius:50%;border:1.5px solid #FFFFFF;font-size:0;color:transparent;transform:scale(1);transition:transform .35s var(--ease), opacity .35s var(--ease);box-shadow:0 0 0 0 rgba(188,125,93,0);pointer-events:none}
 .cart-badge[data-count="0"]{transform:scale(0);opacity:0}
@@ -115,6 +116,7 @@ input,select,textarea{font:inherit}
   .header-inner{grid-template-columns:1fr auto 1fr;gap:2rem}
   .nav-left{gap:2rem}
   .nav-left .nav-link,.nav-right .nav-link{display:inline-flex}
+  .nav-right .icon-btn[aria-label="Search"],.nav-right .icon-btn[aria-label="Account"]{display:inline-flex}
   .hamburger{display:none}
   .brand-logo svg{height:2rem}
 }
@@ -1124,7 +1126,7 @@ input,select,textarea{font:inherit}
 
 /* PDP · MOBILE-FIRST · base = single column, gallery thumbs as horizontal strip, no sticky. Desktop split layers in at ≥980px. */
 .pdp{max-width:var(--max-w);margin:0 auto;padding:24px var(--gutter) 56px;display:grid;grid-template-columns:1fr;gap:32px;align-items:start}
-.pdp-gallery{align-self:start;display:grid;grid-template-columns:1fr;gap:14px;order:1}
+.pdp-gallery{align-self:start;display:grid;grid-template-columns:1fr;gap:14px;order:0} /* photo first: top on mobile, left on desktop */
 .pdp-thumbs{display:flex;flex-direction:row;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:10px;order:2}
 .pdp-thumb{aspect-ratio:1/1;border-radius:var(--r-sm);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .25s}
 .pdp-thumb.active,.pdp-thumb:hover{border-color:var(--clay)}
@@ -1295,7 +1297,7 @@ input,select,textarea{font:inherit}
 }
 /* Desktop split: two-column with sticky gallery. Reset thumb order so the 88px thumb strip sits in column 1 (source order). */
 @media (min-width:980px){
-  .pdp{padding:40px var(--gutter) 80px;grid-template-columns:1.15fr 1fr;gap:64px}
+  .pdp{padding:40px var(--gutter) 80px;grid-template-columns:1fr 1.15fr;gap:64px}
   .pdp-gallery{position:sticky;top:96px;grid-template-columns:88px 1fr;gap:14px}
   .pdp-thumbs{flex-direction:column;overflow-x:visible;order:0}
   .pdp-thumb{flex:initial}
@@ -4061,6 +4063,7 @@ function qsSelect(btn){
 function quickShopAdd(btn, productId, skuTog, skuColour){
   const card = btn.closest('.p-card');
   if(!card) return;
+  const fromSheet = card.classList.contains('qs-open');
   const activeSize = card.querySelector('.qs-size.active');
   const size = activeSize ? activeSize.dataset.size : '0-3 Months';
   const p = products.find(x => x.id === productId);
@@ -4071,6 +4074,7 @@ function quickShopAdd(btn, productId, skuTog, skuColour){
     const meta = (skuTog ? skuTog + ' TOG · ' : '') + size + ' · ' + skuColour;
     addToCart(productId, meta, true, null, price);
     closeCardSheet();
+    if(fromSheet) openCart();
     return;
   }
   const activeColour = card.querySelector('.qs-colour.active');
@@ -4078,6 +4082,7 @@ function quickShopAdd(btn, productId, skuTog, skuColour){
   const togBit = (p.tog && p.tog !== 'Kit' && p.tog !== 'Base layer' && p.tog !== 'Day layer') ? p.tog + ' · ' : '';
   addToCart(productId, togBit + size + ' · ' + colour);
   closeCardSheet();
+  if(fromSheet) openCart();
 }
 // V1.6 · mobile · present the per-card quick-shop as a bottom sheet on touch. Reuses the card's existing quick-shop content + copy; only the presentation changes.
 function openCardSheet(btn){
