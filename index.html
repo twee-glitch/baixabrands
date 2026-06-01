@@ -14,6 +14,13 @@
      quiet "Bestseller" badge (pine/cream, p-badge-best) on the genuine #1 seller only — tot-bag (The Sleeveless Sleep
      Bag, 312 reviews) via best:true; takes badge priority over Most loved / Save / Kit. Nav entry points deliberately
      SKIPPED (nav already shop-led + no product-type filter to link to; category cards cover the need).
+     V1.7c (2026-06-01) = sticky-bar work: (a) FIXED the sticky header — body/html had overflow-x:hidden which silently
+     breaks position:sticky on descendants; switched to overflow-x:CLIP (clips off-canvas drawers without making body a
+     scroll container). (b) Cart reminder (#cartRemind) moved from top-right to a BOTTOM-centred sticky pill. (c) New
+     PDP sticky add-to-cart bar (#pdpSticky, body-level, full-width) — slides up once .qty-add-row scrolls out of view
+     (IntersectionObserver), mirrors live product/price/variant (MutationObserver on #pdpAddLabel), button calls
+     addPdpToCart(). Cart reminder is fully SUPPRESSED on product pages (onProduct gate in refreshCartRemind) so the add
+     bar owns the PDP bottom with no scroll-swap; the reminder still shows on all other pages except checkout. Little Sleepies pattern.
      V1.5 (2026-05-21) = PDP purchase dropdown moved to just above the Add button; Cloud Cream colourway retired in
      favour of Soft Blush (existing palette only — a brief "Moonlight" new-colour attempt was reverted); Shop rebuilt
      as a single exploded colour×TOG SKU wall (no Style/SKU toggle, neutral "Sort by", each card colour-tinted, every
@@ -278,6 +285,17 @@ input,select,textarea{font:inherit}
 .cart-remind .cr-close:hover{background:rgba(247,237,223,0.22)}
 @media (min-width:600px){.cart-remind{bottom:24px;gap:12px;padding:12px 16px 12px 18px}}
 @media (prefers-reduced-motion:reduce){.cart-remind{transition:opacity .2s}}
+
+/* PDP STICKY ADD-TO-CART BAR · full-width, body-level, slides up on scroll (Little Sleepies pattern) */
+.pdp-sticky{position:fixed;left:0;right:0;bottom:0;z-index:160;display:flex;align-items:center;gap:12px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--white);border-top:1px solid var(--hairline);box-shadow:0 -8px 30px rgba(44,44,44,0.1);transform:translateY(110%);transition:transform .35s var(--ease);pointer-events:none}
+.pdp-sticky.show{transform:translateY(0);pointer-events:auto}
+.pdp-sticky .ps-thumb{flex:0 0 auto;width:40px;height:40px;border-radius:var(--r-xs);overflow:hidden;padding:0}
+.pdp-sticky .ps-info{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.pdp-sticky .ps-name{font-family:var(--font-display);font-size:14px;font-weight:500;color:var(--pine-deep);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdp-sticky .ps-meta{font-size:12px;color:var(--ink-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdp-sticky .ps-add{flex:0 0 auto;margin:0;padding:13px 18px;white-space:nowrap;font-size:12.5px}
+@media (min-width:600px){.pdp-sticky{gap:14px;padding:12px 24px calc(12px + env(safe-area-inset-bottom))}.pdp-sticky .ps-thumb{width:46px;height:46px}.pdp-sticky .ps-add{padding:15px 28px;font-size:13px}}
+@media (prefers-reduced-motion:reduce){.pdp-sticky{transition:none}}
 
 /* CART DRAWER,premium, high-conversion */
 .cart-overlay{position:fixed;inset:0;background:rgba(44,44,44,0.55);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -3436,6 +3454,16 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <button class="cr-close" aria-label="Dismiss" onclick="event.stopPropagation();dismissCartRemind()">×</button>
 </div>
 
+<!-- PDP STICKY ADD-TO-CART BAR · body-level · slides up once the main Add button scrolls out of view (Little Sleepies pattern). Mirrors the live PDP product/price/variant. -->
+<div class="pdp-sticky" id="pdpSticky">
+  <div class="ps-thumb ph ph-oat" id="pdpStickyThumb" aria-hidden="true"></div>
+  <div class="ps-info">
+    <span class="ps-name" id="pdpStickyName">The Swaddle Up</span>
+    <span class="ps-meta" id="pdpStickyMeta">1.0 TOG · Dusty Sage</span>
+  </div>
+  <button class="btn ps-add" onclick="addPdpToCart()"><span id="pdpStickyLabel">Add to Baby&rsquo;s Wardrobe · £42</span><span class="btn-arrow">→</span></button>
+</div>
+
 <!-- CART DRAWER · premium high-conversion -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <div class="psheet-ov" id="pSheetOv" onclick="closeAddSheet()"></div>
@@ -3607,7 +3635,7 @@ function goto(page, filter, extra, extra2){
   if(page === 'gift') renderGiftHub();
   window.scrollTo({top:0,behavior:'instant'});
   setTimeout(triggerReveals, 80);
-  closeCart(); closeMobileNav();
+  closeCart(); closeMobileNav(); hidePdpSticky();
 }
 function openCart(){ document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartDrawer').classList.add('open'); document.body.style.overflow='hidden'; updateCart(); }
 function closeCart(){ document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); document.body.style.overflow=''; refreshCartRemind(); }
@@ -4016,7 +4044,8 @@ function refreshCartRemind(){
   const drawerOpen = document.getElementById('cartDrawer').classList.contains('open');
   const activePage = document.querySelector('.page.active');
   const onCheckout = activePage && activePage.dataset.page === 'checkout';
-  if(count > 0 && !drawerOpen && !onCheckout && !window._cartRemindDismissed){
+  const onProduct = activePage && activePage.dataset.page === 'product';
+  if(count > 0 && !drawerOpen && !onCheckout && !onProduct && !window._pdpStickyShown && !window._cartRemindDismissed){
     const sub = document.getElementById('cartRemindSub');
     if(sub) sub.textContent = count + (count === 1 ? ' item' : ' items') + ' · £' + (Math.round(subtotal*100)/100);
     el.classList.add('show');
@@ -4029,6 +4058,47 @@ function dismissCartRemind(){
   const el = document.getElementById('cartRemind');
   if(el) el.classList.remove('show');
 }
+
+/* PDP STICKY ADD-TO-CART BAR · slides up once the main Add button scrolls out of view (Little Sleepies pattern) */
+function syncPdpSticky(){
+  const bar = document.getElementById('pdpSticky'); if(!bar) return;
+  const lbl = document.getElementById('pdpAddLabel'), sl = document.getElementById('pdpStickyLabel');
+  if(lbl && sl) sl.textContent = lbl.textContent;
+  if(typeof currentPdp !== 'undefined' && currentPdp){
+    const nm = document.getElementById('pdpStickyName'); if(nm) nm.textContent = currentPdp.name;
+    const th = document.getElementById('pdpStickyThumb'); if(th) th.className = 'ps-thumb ph ' + (currentPdp.ph || 'ph-oat');
+  }
+  const sizeEl = document.querySelector('.var-pills[data-variant="size"] .var-pill.active');
+  const size = sizeEl ? (sizeEl.dataset.value || sizeEl.textContent.trim()) : '';
+  const tog = document.getElementById('togDdTog'), col = document.getElementById('colourName'), meta = document.getElementById('pdpStickyMeta');
+  if(meta){ const parts = []; if(size) parts.push(size); if(tog && tog.textContent.trim()) parts.push(tog.textContent.trim()); if(col && col.textContent.trim()) parts.push(col.textContent.trim()); meta.textContent = parts.join(' · '); }
+}
+function togglePdpSticky(show){
+  const bar = document.getElementById('pdpSticky'); if(!bar) return;
+  const drawerOpen = document.getElementById('cartDrawer').classList.contains('open');
+  const active = document.querySelector('.page.active');
+  const onProduct = active && active.dataset.page === 'product';
+  const really = !!show && onProduct && !drawerOpen;
+  if(really) syncPdpSticky();
+  bar.classList.toggle('show', really);
+  window._pdpStickyShown = really;
+  refreshCartRemind();
+}
+function hidePdpSticky(){ togglePdpSticky(false); }
+(function(){
+  const addRow = document.querySelector('.qty-add-row');
+  if(addRow && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      const e = entries[0];
+      togglePdpSticky(!e.isIntersecting && e.boundingClientRect.top < 0);
+    }, { threshold: 0, rootMargin: '0px 0px -45% 0px' });
+    io.observe(addRow);
+  }
+  const lbl = document.getElementById('pdpAddLabel');
+  if(lbl && 'MutationObserver' in window){
+    new MutationObserver(() => { if(window._pdpStickyShown) syncPdpSticky(); }).observe(lbl, { childList: true, characterData: true, subtree: true });
+  }
+})();
 
 /* PEEK CROSS-SELL · horizontal scroll-snap, 1 full + ~30% next visible */
 function getXsellPool(){ return products.filter(p => !cart.find(c => c.id === p.id) && p.cat !== 'kit').slice(0, 5); }
