@@ -21,6 +21,31 @@
      (IntersectionObserver), mirrors live product/price/variant (MutationObserver on #pdpAddLabel), button calls
      addPdpToCart(). Cart reminder is fully SUPPRESSED on product pages (onProduct gate in refreshCartRemind) so the add
      bar owns the PDP bottom with no scroll-swap; the reminder still shows on all other pages except checkout. Little Sleepies pattern.
+     V1.7d (2026-06-01) = PDP simplified per Twee — DROPPED the wordy Problem→Solution→Result block; replaced with a
+     compact quick-scan FABRIC ICON STRIP (.pdp-icons, 2-up→3-up, soft sage circle icons, Little Sleepies style):
+     Naturally breathable / OEKO-TEX Class I / Temperature-matched / Kind to sensitive skin / Softer every wash /
+     Designed in London. Universal honest claims; the long-form detail stays in the existing accordions (Fabric & Care,
+     Sizing, Safer Sleep, TOG & room temperature) so the buy area stays minimal (price, size, TOG, colour, add).
+     V1.7e (2026-06-01) = PDP restructured per Twee to: name / price / review / TOG / size / colour / add, THEN a single
+     consolidated product-detail zone (fabric icon strip only — the .pdp-trust 4-up trust grid was REMOVED per Twee on
+     2026-06-01, the ★4.9/Free delivery/30-day/BS EN 16781 row) before the accordions. REMOVED from the top: the
+     Klarna line (#pdpKlarna el gone), the VAT/delivery line (.pdp-tax), the description paragraph (#pdpDesc el gone),
+     and the quality-chips row (#pdpQChips el gone). loadProduct null-guards for pdpKlarna/pdpDesc (set() already safe;
+     pdpQChips block already guarded). The old top chips + bottom trust grid are now merged into the one detail zone.
+     Also V1.7e: BUTTON UNIFICATION — TOG dropdown + purchase dropdown de-creamed to plain white-outline so all selector
+     controls (TOG / size / colour / qty / purchase) match; clay reserved as the single accent on the Add button; active
+     size pill stays pine (selection indicator). Founder-approved tweak to the otherwise-locked warm palette on the PDP buy area.
+     V1.7f (2026-06-01) = Subscribe & Save now ACTUALLY applies (was label-only). Central helpers pdpMoney/pdpEffUnit/
+     refreshPdpAddLabel: choosing Subscribe drops the per-unit price 10%, updates the Add button immediately, and the
+     discounted price flows into the cart line (pdpLinePrice ×0.9) → cart + checkout totals. Buy box leaned: each option
+     shows a real price (#pdpSubPrice replaces the old −£X save span), the "Refresh every…" selector only shows when the
+     Subscribe option is active. Struck-through original price (.was) shown next to the discounted one on the Subscribe
+     option, the Add button, and the sticky bar (lighter cream strike on the clay buttons; sticky mirrors innerHTML now).
+     NOTE: real recurring billing still needs a subscriptions app (Recharge/Shopify) at launch.
+     V1.7g (2026-06-01) = Subscribe selector changed from a collapsing dropdown to TWO always-visible selectable cards
+     (radiogroup; active = clay border + inset ring). Removed the dropdown trigger/redundant header line; selectBuy now
+     scopes to .pdp-purchase-modes and toggles aria-checked. toggleBuyDropdown/updateBuyTrigger are now dead/no-ops (kept,
+     harmless). Saving is visible without a click; refresh selector still only shows under the active Subscribe card.
      V1.5 (2026-05-21) = PDP purchase dropdown moved to just above the Add button; Cloud Cream colourway retired in
      favour of Soft Blush (existing palette only — a brief "Moonlight" new-colour attempt was reverted); Shop rebuilt
      as a single exploded colour×TOG SKU wall (no Style/SKU toggle, neutral "Sort by", each card colour-tinted, every
@@ -1204,6 +1229,11 @@ input,select,textarea{font:inherit}
 .pdp-info{padding-top:8px}
 .pdp-cat{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--clay);margin-bottom:10px}
 .pdp-title{font-family:var(--font-display);font-weight:400;font-size:clamp(36px,4vw,52px);line-height:1;color:var(--pine-deep);margin-bottom:16px;letter-spacing:-0.02em}
+.pdp-icons{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 12px;margin:6px 0 24px;border-top:1px solid var(--hairline-soft);padding-top:20px}
+@media (min-width:560px){.pdp-icons{grid-template-columns:repeat(3,1fr);gap:18px 14px}}
+.pdp-icons .pi{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:500;color:var(--pine-deep);line-height:1.25}
+.pdp-icons .pi-ic{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--sage-mist);display:inline-flex;align-items:center;justify-content:center;color:var(--pine)}
+.pdp-icons .pi-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .pdp-rating{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-mute);margin-bottom:20px;font-weight:500;cursor:pointer}
 .pdp-rating .stars{color:var(--clay);font-size:14px;letter-spacing:2px}
 .pdp-rating .scroll-link{color:var(--clay);border-bottom:1px solid var(--clay);padding-bottom:1px}
@@ -1214,7 +1244,7 @@ input,select,textarea{font:inherit}
 .pdp-tax{font-size:11px;color:var(--ink-mute);margin-bottom:24px;letter-spacing:0.04em}
 
 /* SUBSCRIBE TOGGLE on PDP */
-.pdp-purchase-modes{margin-bottom:24px;border:1.5px solid var(--hairline);border-radius:var(--r-md);overflow:hidden;background:var(--white)}
+.pdp-purchase-modes{margin-bottom:24px;display:flex;flex-direction:column;gap:10px}
 .pdp-mode{padding:18px 22px;display:flex;align-items:flex-start;gap:14px;cursor:pointer;border-bottom:1.5px solid var(--hairline);transition:background .2s}
 .pdp-mode:last-child{border-bottom:0}
 .pdp-mode:hover{background:var(--cream-warm)}
@@ -1313,25 +1343,28 @@ input,select,textarea{font:inherit}
 .tog-dd-current{flex:1;text-align:left}
 .opt-icon{display:inline-flex;align-items:center;color:var(--clay);flex-shrink:0}
 .tog-opt.active .opt-icon{color:var(--clay-deep)}
-/* V1.4 · warm the TOG box so it lifts off the white page */
-.tog-dd-trigger{background:var(--cream-warm)}
-/* V1.4 · Purchase dropdown · warm box, collapses to one line */
-.buy-dd{background:var(--cream-warm);border:1px solid var(--oat-soft);border-radius:var(--r-sm);overflow:hidden}
+/* V1.7e · minimal · TOG box is plain white so it matches the size pills / qty / purchase controls (was cream-warm) */
+.tog-dd-trigger{background:var(--white)}
+/* V1.7e · Purchase dropdown · transparent so the white .pdp-purchase-modes wrapper supplies the single hairline border (was cream-warm) */
+.buy-dd{background:transparent;border:none;border-radius:var(--r-sm);overflow:hidden}
 .buy-dd-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:transparent;border:none;padding:15px 18px;cursor:pointer}
 .buy-dd-current{display:flex;align-items:baseline;gap:10px}
 .buy-dd-title{font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--pine-deep)}
 .buy-dd-meta{font-size:13px;color:var(--clay-deep);font-weight:600}
-.buy-dd-panel{display:none;flex-direction:column;border-top:1px solid var(--oat-soft)}
+.buy-dd-panel{display:none;flex-direction:column;border-top:1px solid var(--hairline)}
 .buy-dd.open .buy-dd-panel{display:flex}
-.buy-opt{text-align:left;background:transparent;border:none;border-bottom:1px solid var(--hairline-soft);padding:14px 18px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:background .15s}
-.buy-opt:last-child{border-bottom:none}
-.buy-opt:hover,.buy-opt.active{background:var(--white)}
+.buy-opt{text-align:left;background:var(--white);border:1.5px solid var(--hairline);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:border-color .2s,box-shadow .2s}
+.buy-opt:hover{border-color:var(--pine-deep)}
+.buy-opt.active{border-color:var(--clay);box-shadow:inset 0 0 0 1px var(--clay)}
 .buy-opt-main{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .buy-opt-title{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--pine-deep)}
 .buy-opt-price{font-size:14px;color:var(--pine-deep);font-weight:500}
+.was{text-decoration:line-through;color:var(--ink-mute);font-weight:400;margin-right:3px;opacity:.75}
+.pdp-add .was,.ps-add .was{color:rgba(247,237,223,0.6)}
 .buy-opt-save{color:var(--sage);font-size:12px;font-weight:600;font-family:var(--font-body)}
 .buy-opt-sub{font-size:12px;color:var(--ink-mute);line-height:1.5}
-.buy-opt-extra{font-size:12px;color:var(--pine-deep);margin-top:4px}
+.buy-opt-extra{font-size:12px;color:var(--pine-deep);margin-top:4px;display:none}
+.buy-opt.active .buy-opt-extra{display:block}
 .buy-opt-extra select{padding:6px 10px;border:1px solid var(--hairline);border-radius:var(--r-xs);font-size:12px;background:var(--white);font-family:inherit;color:var(--pine-deep)}
 .var-swatches{display:flex;gap:10px}
 .var-sw{width:44px;height:44px;border-radius:var(--pill);border:3px solid var(--white);cursor:pointer;box-shadow:0 0 0 1.5px var(--hairline);transition:box-shadow .2s}
@@ -2694,18 +2727,8 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
     <div class="pdp-info">
       <div class="pdp-cat" id="pdpCat">Swaddles · Newborn</div>
       <h1 class="pdp-title" id="pdpTitle">The Swaddle Up</h1>
-      <div class="q-chips pdp-q-chips" id="pdpQChips">
-        <span class="q-chip q-tog">1.0 TOG</span>
-        <span class="q-chip q-oeko">OEKO-TEX Class I</span>
-        <span class="q-chip q-bamboo">100% Organic Bamboo</span>
-        <span class="q-chip q-bs">BS EN 16781</span>
-      </div>
-      <div class="pdp-rating"><span class="stars">★ ★ ★ ★ ★</span><span><span class="scroll-link">4.9 · 247 reviews</span></span></div>
       <div class="pdp-price"><span id="pdpPrice">£42</span></div>
-      <div class="pdp-klarna">or 3 interest-free payments of <strong id="pdpKlarna">£14</strong> with Klarna</div>
-      <div class="pdp-tax">VAT included · Free UK delivery on orders £40+</div>
-
-      <p class="pdp-desc" id="pdpDesc">95% organic cotton, 5% elastane. The mid-weight swaddle for the UK average nursery. Snug at the chest, room at the legs, hip-healthy IHDI cut. Tagless, snap-friendly, and washes softer every time.</p>
+      <div class="pdp-rating"><span class="stars">★ ★ ★ ★ ★</span><span><span class="scroll-link">4.9 · 247 reviews</span></span></div>
 
       <!-- GIFT BUNDLE BLOCK · V1.3 · Shown when product.isGift is true. Info-only panel covering the wrapping, gift card, hidden price, and 60-day gift-return window. Doubles as a positioning band before the configurator below. -->
       <div class="pdp-gift-block" id="pdpGiftBlock" hidden>
@@ -2763,24 +2786,17 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       </div>
 
       <!-- SUBSCRIBE TOGGLE · V1.4 · moved to just above the Add button (after the parent has chosen TOG/size/colour) · hidden on gift PDPs (you don't subscribe to a gift) -->
-      <div class="pdp-purchase-modes" id="pdpPurchaseModes">
-        <div class="buy-dd" id="buyDropdown">
-          <button class="buy-dd-trigger" type="button" onclick="toggleBuyDropdown()">
-            <span class="buy-dd-current"><span class="buy-dd-title" id="buyDdTitle">One-time purchase</span><span class="buy-dd-meta" id="buyDdMeta">£42</span></span>
-            <span class="tog-dd-chev">▾</span>
-          </button>
-          <div class="buy-dd-panel">
-            <button class="buy-opt active" type="button" onclick="selectBuy(this,false)">
-              <div class="buy-opt-main"><span class="buy-opt-title">One-time purchase</span><span class="buy-opt-price" id="pdpOneTime">£42</span></div>
-              <span class="buy-opt-sub">Free UK delivery over £40 · 30-day returns</span>
-            </button>
-            <button class="buy-opt" type="button" onclick="selectBuy(this,true)">
-              <div class="buy-opt-main"><span class="buy-opt-title">Subscribe & save 10%</span><span class="buy-opt-save">−£<span id="pdpSubSave">4.20</span></span></div>
-              <span class="buy-opt-sub">Refreshed as baby grows. Skip or cancel anytime.</span>
-              <div class="buy-opt-extra">Refresh every <select onclick="event.stopPropagation()" onchange="event.stopPropagation()"><option>2 months</option><option selected>3 months</option><option>4 months</option></select> as baby grows into the next size</div>
-            </button>
-          </div>
-        </div>
+      <!-- V1.7g · Two always-visible selectable cards (was a dropdown). Tap to choose; saving visible without a click; refresh selector only under the active Subscribe card. -->
+      <div class="pdp-purchase-modes" id="pdpPurchaseModes" role="radiogroup" aria-label="Purchase option">
+        <button class="buy-opt active" type="button" role="radio" aria-checked="true" onclick="selectBuy(this,false)">
+          <div class="buy-opt-main"><span class="buy-opt-title">One-time purchase</span><span class="buy-opt-price" id="pdpOneTime">£42</span></div>
+          <span class="buy-opt-sub">Free UK delivery over £40 · 30-day returns</span>
+        </button>
+        <button class="buy-opt" type="button" role="radio" aria-checked="false" onclick="selectBuy(this,true)">
+          <div class="buy-opt-main"><span class="buy-opt-title">Subscribe &amp; save 10%</span><span class="buy-opt-price" id="pdpSubPrice">£37.80</span></div>
+          <span class="buy-opt-sub">Refreshed as baby grows. Skip anytime.</span>
+          <div class="buy-opt-extra">Refresh every <select onclick="event.stopPropagation()" onchange="event.stopPropagation()"><option>2 months</option><option selected>3 months</option><option>4 months</option></select> as baby grows</div>
+        </button>
       </div>
 
       <div class="qty-add-row">
@@ -2793,11 +2809,15 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
         <div><strong>"Sleep on it" guarantee.</strong> 30-day free returns. If baby doesn't settle better, we refund.</div>
       </div>
 
-      <div class="pdp-trust">
-        <div class="pdp-trust-item"><strong>★ 4.9 rated</strong>loved by UK parents</div>
-        <div class="pdp-trust-item"><strong>Free delivery</strong>orders over £40</div>
-        <div class="pdp-trust-item"><strong>30-day returns</strong>free, no questions</div>
-        <div class="pdp-trust-item"><strong>BS EN 16781</strong>fully compliant</div>
+      <!-- PRODUCT DETAIL · V1.7d · consolidated fabric icons + trust row (merged the old top quality-chips + bottom trust grid into one block after the buy area, per Twee). -->
+      <!-- FABRIC BENEFIT ICONS · quick-scan strip (Little Sleepies style); long-form detail lives in the accordions below. Universal, honest claims. -->
+      <div class="pdp-icons" aria-label="Fabric and care highlights">
+        <div class="pi"><span class="pi-ic"><svg viewBox="0 0 24 24"><path d="M12 3C8 6 5 9 5 13a7 7 0 0 0 14 0c0-4-3-7-7-11Z"/><path d="M12 8v9"/></svg></span><span>Naturally breathable</span></div>
+        <div class="pi"><span class="pi-ic"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4 3 7 7 8 4-1 7-4 7-8V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><span>OEKO-TEX Class I</span></div>
+        <div class="pi"><span class="pi-ic"><svg viewBox="0 0 24 24"><path d="M14 14V5a2 2 0 0 0-4 0v9a4 4 0 1 0 4 0Z"/></svg></span><span>Temperature-matched</span></div>
+        <div class="pi"><span class="pi-ic"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 10a6 6 0 0 1-12 0c0-4 6-10 6-10Z"/></svg></span><span>Kind to sensitive skin</span></div>
+        <div class="pi"><span class="pi-ic"><svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.6 2.6M15.4 15.4 18 18M18 6l-2.6 2.6M8.6 15.4 6 18"/></svg></span><span>Softer every wash</span></div>
+        <div class="pi"><span class="pi-ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5-7-11a7 7 0 0 1 14 0c0 6-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span>Designed in London</span></div>
       </div>
 
       <div class="pdp-acc-item"><button class="pdp-acc-trigger" onclick="toggleAcc(this)">Fabric & Care<span class="pdp-acc-chev">▼</span></button><div class="pdp-acc-body"><div class="pdp-acc-body-inner" id="pdpAccFabric">Bamboo viscose against the skin, organic cotton for warmth. OEKO-TEX Standard 100, Class I certified. Machine wash at 30°C, low tumble dry, do not bleach. Becomes softer with every wash.</div></div></div>
@@ -4063,7 +4083,7 @@ function dismissCartRemind(){
 function syncPdpSticky(){
   const bar = document.getElementById('pdpSticky'); if(!bar) return;
   const lbl = document.getElementById('pdpAddLabel'), sl = document.getElementById('pdpStickyLabel');
-  if(lbl && sl) sl.textContent = lbl.textContent;
+  if(lbl && sl) sl.innerHTML = lbl.innerHTML;
   if(typeof currentPdp !== 'undefined' && currentPdp){
     const nm = document.getElementById('pdpStickyName'); if(nm) nm.textContent = currentPdp.name;
     const th = document.getElementById('pdpStickyThumb'); if(th) th.className = 'ps-thumb ph ' + (currentPdp.ph || 'ph-oat');
@@ -4702,15 +4722,31 @@ function renderKitConfig(kitId, preFilled){
 }
 
 // V1.4 · Update every PDP price display together (header, Klarna, add button, one-time radio, subscribe save, mobile sticky) so TOG changes stay consistent.
+// V1.7f · Subscribe & Save · single source of truth for the displayed price. pdpUnitPrice stays the one-time base; the
+// 10% is applied for display + the cart line only when pdpSubscribe is on. pdpMoney drops a trailing .00 so whole prices
+// read "£42" but a discounted "£37.80" keeps its pence.
+function pdpMoney(n){ return Number.isInteger(n) ? ('£'+n) : ('£'+n.toFixed(2)); }
+function pdpEffUnit(){ return pdpSubscribe ? Math.round(pdpUnitPrice*0.9*100)/100 : pdpUnitPrice; }
+function refreshPdpAddLabel(){
+  const el = document.getElementById('pdpAddLabel'); if(!el) return;
+  const qi = document.getElementById('pdpQty'); const qty = qi ? Math.max(1, parseInt(qi.value)||1) : 1;
+  const eff = Math.round(pdpEffUnit()*qty*100)/100;
+  if(pdpSubscribe){
+    const full = Math.round(pdpUnitPrice*qty*100)/100;
+    el.innerHTML = "Add to Baby&rsquo;s Wardrobe · <s class=\"was\">"+pdpMoney(full)+"</s> "+pdpMoney(eff);
+  } else {
+    el.textContent = "Add to Baby's Wardrobe · "+pdpMoney(eff);
+  }
+}
 function setPdpPrice(price){
   pdpUnitPrice = price;
   const set = (i,v) => { const el = document.getElementById(i); if(el) el.textContent = v; };
   set('pdpPrice','£'+price);
   set('pdpKlarna','£'+(price/3).toFixed(2));
-  set('pdpAddLabel',"Add to Baby's Wardrobe · £"+price);
   set('pdpOneTime','£'+price);
-  set('pdpSubSave',(price*0.10).toFixed(2));
+  { const sp = document.getElementById('pdpSubPrice'); if(sp) sp.innerHTML = '<s class="was">'+pdpMoney(price)+'</s> '+pdpMoney(Math.round(price*0.9*100)/100); }
   set('smcPrice','£'+price);
+  refreshPdpAddLabel();
   if(typeof updateBuyTrigger === 'function') updateBuyTrigger();
 }
 // V1.4 · TOG dropdown · one-line summary that expands to all five room-temperature options (accordion-style).
@@ -4733,14 +4769,15 @@ function toggleBuyDropdown(){
 function updateBuyTrigger(){
   const t = document.getElementById('buyDdTitle'); const m = document.getElementById('buyDdMeta');
   if(t) t.textContent = pdpSubscribe ? 'Subscribe & save 10%' : 'One-time purchase';
-  if(m) m.textContent = pdpSubscribe ? ('save £'+(pdpUnitPrice*0.10).toFixed(2)) : ('£'+pdpUnitPrice);
+  if(m) m.textContent = pdpMoney(pdpEffUnit());
 }
 function selectBuy(btn, isSub){
-  const dd = btn.closest('.buy-dd');
-  if(dd){ dd.querySelectorAll('.buy-opt').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+  const dd = btn.closest('.pdp-purchase-modes');
+  if(dd){ dd.querySelectorAll('.buy-opt').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-checked','false'); }); }
+  btn.classList.add('active'); btn.setAttribute('aria-checked','true');
   pdpSubscribe = isSub;
   updateBuyTrigger();
-  if(dd) dd.classList.remove('open');
+  refreshPdpAddLabel();
 }
 function selectTogDd(btn){
   const dd = btn.closest('.tog-dd'); if(!dd) return;
@@ -4781,10 +4818,10 @@ function loadProduct(id, presetTog, presetColour){
       const ic = document.getElementById('togDdIcon'); const optIc = matched.querySelector('.opt-icon'); if(ic && optIc) ic.innerHTML = optIc.innerHTML;
     }
   }
-  document.getElementById('pdpKlarna').textContent = '£'+(p.price/3).toFixed(2);
+  { const k = document.getElementById('pdpKlarna'); if(k) k.textContent = '£'+(p.price/3).toFixed(2); }
   document.getElementById('pdpCrumb').textContent = p.name;
-  document.getElementById('pdpAddLabel').textContent = "Add to Baby's Wardrobe · £"+p.price;
-  document.getElementById('pdpDesc').textContent = p.desc;
+  refreshPdpAddLabel();
+  { const d = document.getElementById('pdpDesc'); if(d) d.textContent = p.desc; }
   // V1.4 · Fabric is now per-product (Q3 Option A · two-fibre story). Bamboo against the skin, organic cotton for warmth.
   const cottonIds = ['tot-swaddle','tot-bag','tot-convertible'];
   const fabricMap = {
@@ -4815,14 +4852,14 @@ function loadProduct(id, presetTog, presetColour){
     fabEl.textContent = base + ' OEKO-TEX Standard 100, Class I certified. Machine wash at 30°C, low tumble dry, do not bleach. Becomes softer with every wash.';
   }
   document.getElementById('pdpOneTime').textContent = '£'+p.price;
-  document.getElementById('pdpSubSave').textContent = (p.price * 0.10).toFixed(2);
+  { const sp = document.getElementById('pdpSubPrice'); if(sp) sp.innerHTML = '<s class="was">'+pdpMoney(p.price)+'</s> '+pdpMoney(Math.round(p.price*0.9*100)/100); }
   document.getElementById('pdpQty').value = 1;
   // Update sticky mobile cta
   document.getElementById('smcName').textContent = p.name;
   document.getElementById('smcPrice').textContent = '£'+p.price;
   document.querySelectorAll('.pdp-thumb').forEach((t,i) => t.classList.toggle('active', i===0));
   // V1.4 · Reset purchase dropdown to one-time on every product load.
-  document.querySelectorAll('.buy-opt').forEach((m,i) => m.classList.toggle('active', i===0));
+  document.querySelectorAll('.buy-opt').forEach((m,i) => { m.classList.toggle('active', i===0); m.setAttribute('aria-checked', i===0 ? 'true' : 'false'); });
   pdpSubscribe = false;
   if(document.getElementById('buyDropdown')) document.getElementById('buyDropdown').classList.remove('open');
   updateBuyTrigger();
@@ -4959,7 +4996,7 @@ function adjustQty(d){
   const i = document.getElementById('pdpQty');
   const v = Math.max(1, parseInt(i.value) + d);
   i.value = v;
-  document.getElementById('pdpAddLabel').textContent = "Add to Baby's Wardrobe · £"+(currentPdp.price * v);
+  refreshPdpAddLabel();
 }
 function addPdpToCart(){
   const qty = parseInt(document.getElementById('pdpQty').value);
@@ -5006,7 +5043,7 @@ function addPdpToCart(){
   if(editingKitLine){
     cart = cart.filter(c => c.key !== editingCartKey);
   }
-  const pdpLinePrice = (currentPdp.cat === 'kit') ? null : (pdpUnitPrice || currentPdp.price);
+  const pdpLinePrice = (currentPdp.cat === 'kit') ? null : Math.round((pdpUnitPrice || currentPdp.price) * (pdpSubscribe ? 0.9 : 1) * 100)/100;
   for(let i=0;i<qty;i++) addToCart(currentPdp.id, meta, false, kitDetails, pdpLinePrice);
   if(editingCartKey){
     showToast('Kit updated');
