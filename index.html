@@ -5,6 +5,15 @@
      "TOG & room temperature" accordion chart; FAQ page gained a support-reassurance block (reply time / order
      tracking / returns + quick links); a body-level floating cart reminder (#cartRemind) nudges browsers with items
      in the basket (hidden on checkout, dismissible, re-arms on each add); plus a 34-fix grammar/missing-space sweep.
+     V1.7b (2026-06-01) = homepage CATEGORY CARDS added below the value-bar (above the layering teaser) — 4 fast entry
+     points (Sleep Bags→tot-bag PDP, Bamboo Layers→tot-bodysuit PDP, Starter Kits→moment, Build a Kit→bundle) + "Shop
+     everything" link → shop. Twee approved overriding the homepage lock for this one insertion (placement: after value-bar).
+     NOTE: no product-type Shop filter exists (axes are stage/category[sleepwear|daywear]/TOG/colour), so the two
+     product cards route to their flagship merged PDP rather than a filtered wall — revisit if a bag/layer filter is added.
+     Also V1.7b: navbar polish (soft shadow + slight shrink on scroll via .header.scrolled; sticky+blur already existed);
+     quiet "Bestseller" badge (pine/cream, p-badge-best) on the genuine #1 seller only — tot-bag (The Sleeveless Sleep
+     Bag, 312 reviews) via best:true; takes badge priority over Most loved / Save / Kit. Nav entry points deliberately
+     SKIPPED (nav already shop-led + no product-type filter to link to; category cards cover the need).
      V1.5 (2026-05-21) = PDP purchase dropdown moved to just above the Add button; Cloud Cream colourway retired in
      favour of Soft Blush (existing palette only — a brief "Moonlight" new-colour attempt was reverted); Shop rebuilt
      as a single exploded colour×TOG SKU wall (no Style/SKU toggle, neutral "Sort by", each card colour-tinted, every
@@ -89,7 +98,10 @@ input,select,textarea{font:inherit}
 
 /* HEADER · MOBILE-FIRST (per Responsive_Design_Rules.md) · base styles target the phone; min-width queries layer tablet/desktop. rem + clamp units; 44px tap targets. */
 /* Solid sticky header (no backdrop-filter) for smooth scroll on lower-end mobile devices */
-.header{position:sticky;top:0;z-index:100;background:#FFFFFF;border-bottom:1px solid var(--hairline)}
+.header{position:sticky;top:0;z-index:100;background:#FFFFFF;border-bottom:1px solid var(--hairline);transition:box-shadow .3s var(--ease),background .3s var(--ease)}
+.header.scrolled{box-shadow:0 6px 24px -14px rgba(44,44,44,0.22)}
+.header-inner{transition:padding .3s var(--ease)}
+.header.scrolled .header-inner{padding-top:clamp(0.5rem,1.6vw,0.8rem);padding-bottom:clamp(0.5rem,1.6vw,0.8rem)}
 /* BASE = mobile · hamburger | logo | icons */
 .header-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;max-width:87.5rem;margin:0 auto;padding:clamp(0.75rem,2.5vw,1.25rem) var(--gutter);gap:1rem}
 .nav-left,.nav-right{display:flex;align-items:center;gap:0.75rem}
@@ -673,6 +685,7 @@ input,select,textarea{font:inherit}
 .p-card:hover .p-image .ph{transform:scale(1.04)}
 .p-badge{position:absolute;top:14px;left:14px;background:var(--clay);color:var(--white);padding:6px 12px;border-radius:var(--pill);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;z-index:3}
 .p-badge.new{background:var(--sage)}
+.p-badge.p-badge-best{background:var(--pine-deep);color:var(--cream-warm)}
 .p-fav{position:absolute;top:14px;right:14px;background:var(--white);width:38px;height:38px;border-radius:var(--pill);display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:var(--lift-1);opacity:0;transform:translateY(-6px);transition:all .3s;cursor:pointer;z-index:3;color:var(--ink-mute)}
 .p-card:hover .p-fav{opacity:1;transform:translateY(0)}
 .p-quick{position:absolute;left:14px;right:14px;bottom:14px;padding:12px;background:var(--white);border-radius:var(--pill);font-size:12px;font-weight:600;color:var(--pine-deep);box-shadow:var(--lift-1);text-align:center;opacity:0;transform:translateY(10px);transition:all .35s var(--ease);z-index:3;cursor:pointer}
@@ -1051,6 +1064,21 @@ input,select,textarea{font:inherit}
   .sms-form input{text-align:center}
   .sms-form .btn{width:100%;justify-content:center}
 }
+
+/* HOMEPAGE CATEGORY CARDS · V1.7 · fast shopping entry points below the value-bar (audit 2.0) · mobile-first 2-up → 4-up */
+.cat-cards{max-width:var(--max-w);margin:0 auto;padding:40px var(--gutter) 8px}
+.cat-cards .cc-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.cat-cards .cc-head .t-eyebrow{font-size:11px}
+.cat-cards .cc-all{font-size:13px;font-weight:600;color:var(--clay);cursor:pointer;border-bottom:1.5px solid var(--clay);padding-bottom:2px}
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (min-width:760px){.cat-cards{padding:56px var(--gutter) 12px}.cat-grid{grid-template-columns:repeat(4,1fr);gap:18px}}
+.cat-card{position:relative;overflow:hidden;border-radius:var(--r-md);cursor:pointer;aspect-ratio:4/5;background:var(--cream-warm);transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.cat-card:hover{transform:translateY(-3px);box-shadow:var(--lift-2)}
+.cat-card .cc-img{position:absolute;inset:0}
+.cat-card .cc-img::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(44,44,44,0) 40%,rgba(44,44,44,0.55) 100%);z-index:1}
+.cat-card .cc-body{position:absolute;left:16px;right:16px;bottom:16px;z-index:2;color:var(--cream-warm)}
+.cat-card h4{font-family:var(--font-display);font-weight:400;font-size:18px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:2px}
+.cat-card .cc-sub{font-family:var(--font-display);font-style:italic;font-size:12px;opacity:0.9}
 
 /* SHOP */
 /* V1.3 · Lean-SKU shop architecture. Replaces sidebar/multi-axis filter with: (1) "Shop by Moment" editorial tile row, (2) horizontal axis tabs (Stage / Layer / TOG / Colour) — one axis active at a time. Premium-baby pattern (MORI / Kyte / Pehr). */
@@ -2036,6 +2064,32 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       </div>
     </div>
   </div>
+
+  <!-- CATEGORY CARDS · V1.7 · fast shopping entry points (audit 2.0) · placed below value-bar, above the layering teaser. Placeholder ph backgrounds to be replaced with editorial category photos. -->
+  <section class="cat-cards reveal">
+    <div class="cc-head">
+      <span class="t-eyebrow">Where to start</span>
+      <span class="cc-all" onclick="goto('shop')">Shop everything →</span>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card" onclick="goto('product','tot-bag')">
+        <div class="cc-img ph ph-sage"><span class="ph-tag">EDITORIAL</span><span class="ph-label">Baby in a sage sleep bag.</span></div>
+        <div class="cc-body"><h4>Sleep Bags</h4><span class="cc-sub">TOG-rated, for every season</span></div>
+      </div>
+      <div class="cat-card" onclick="goto('product','tot-bodysuit')">
+        <div class="cc-img ph ph-cream"><span class="ph-tag">STUDIO</span><span class="ph-label">Bamboo bodysuit, folded.</span></div>
+        <div class="cc-body"><h4>Bamboo Layers</h4><span class="cc-sub">The kindest layer on skin</span></div>
+      </div>
+      <div class="cat-card" onclick="goto('moment')">
+        <div class="cc-img ph ph-clay"><span class="ph-tag">LIFESTYLE</span><span class="ph-label">First-nights kit, flat lay.</span></div>
+        <div class="cc-body"><h4>Starter Kits</h4><span class="cc-sub">Curated, and quietly priced</span></div>
+      </div>
+      <div class="cat-card" onclick="goto('bundle')">
+        <div class="cc-img ph ph-blush"><span class="ph-tag">EDITORIAL</span><span class="ph-label">Mix-and-match wardrobe pieces.</span></div>
+        <div class="cc-body"><h4>Build a Kit</h4><span class="cc-sub">Your own, piece by piece</span></div>
+      </div>
+    </div>
+  </section>
 
   <!-- LAYERING TOOL TEASER (restored to fold 2 · directly under the hero+value-bar) -->
   <section class="tool-band">
@@ -3491,7 +3545,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
 const products = [
   { id:'tot-swaddle', name:'The Swaddle Up', cat:'swaddle', category:'sleepwear', stage:'newborn', catLabel:'Swaddles · 1.0 TOG', price:42, tog:'1.0 TOG', ph:'ph-oat', tag:'EDITORIAL', desc:'95% organic cotton, 5% elastane. The mid-weight essential for the UK average nursery (18–20°C). Quiet two-way zip and arms-up cut for babies who self-soothe naturally.', rating:4.9, reviews:247, swatches:['sage','oat','clay','blush'] },
   { id:'tot-bodysuit', name:'The Soother', cat:'bodysuit', category:'sleepwear', stage:'newborn', catLabel:'Bamboo Bodysuit · 0.5 TOG', price:22, tog:'0.5 TOG', ph:'ph-cream', tag:'STUDIO', desc:'95% bamboo viscose, 5% elastane. Ribbed for a second-skin feel. Hypoallergenic, moisture-wicking, OEKO-TEX Class 1 certified. The layer closest to their skin should be the kindest.', rating:4.8, reviews:189, swatches:['sage','blush','oat','clay'] },
-  { id:'tot-bag', name:'The Sleeveless Sleep Bag', cat:'bag', category:'sleepwear', stage:'baby', catLabel:'Sleep Bags · 2.5 TOG', price:58, tog:'2.5 TOG', ph:'ph-sage', tag:'LIFESTYLE', desc:'2.5 TOG organic cotton construction. For UK rooms that dip below 18°C, October to March. Sleeveless cut prevents overheating; hip-healthy IHDI fit.', rating:4.9, reviews:312, swatches:['sage','blush','oat','clay'] },
+  { id:'tot-bag', name:'The Sleeveless Sleep Bag', cat:'bag', category:'sleepwear', stage:'baby', catLabel:'Sleep Bags · 2.5 TOG', price:58, tog:'2.5 TOG', ph:'ph-sage', tag:'LIFESTYLE', desc:'2.5 TOG organic cotton construction. For UK rooms that dip below 18°C, October to March. Sleeveless cut prevents overheating; hip-healthy IHDI fit.', rating:4.9, reviews:312, best:true, swatches:['sage','blush','oat','clay'] },
   { id:'tot-convertible', name:'Convertible Sleep Bag', cat:'bag', category:'sleepwear', stage:'toddler', catLabel:'Sleep Bags · 1.5 TOG', price:68, tog:'1.5 TOG', ph:'ph-clay', tag:'EDITORIAL', desc:'95% organic cotton, 5% elastane. Two-way zip, longer cut for cooler British spring and autumn nights (18–22°C).', rating:4.9, reviews:64, swatches:['sage','clay','oat','blush'] },
   { id:'tot-romper', name:'Long Sleeve Romper', cat:'daywear', category:'daywear', stage:'daywear', catLabel:'Daywear · Bamboo', price:32, tog:'Day layer', ph:'ph-blush', tag:'STUDIO', desc:'Bamboo viscose romper, soft against the skin, snap-friendly. For days when sleep meets play.', rating:4.8, reviews:124, swatches:['blush','sage','oat','clay'] },
   { id:'tot-summer', name:'Summer Swaddle', cat:'swaddle', category:'sleepwear', stage:'newborn', catLabel:'Swaddles · 0.2 TOG', price:36, tog:'0.2 TOG', ph:'ph-editorial', tag:'EDITORIAL', desc:'Bamboo viscose, featherlight 0.2 TOG. For warm-room summer nights (24–27°C).', rating:5.0, reviews:42, swatches:['clay','oat','blush','sage'] },
@@ -3560,6 +3614,8 @@ function closeCart(){ document.getElementById('cartOverlay').classList.remove('o
 function goCheckout(){ if(cart.length===0){ showToast('Your basket is empty'); return; } closeCart(); goto('checkout'); }
 function openMobileNav(){ document.getElementById('mnav').classList.add('open'); document.body.style.overflow='hidden'; }
 function closeMobileNav(){ document.getElementById('mnav').classList.remove('open'); document.body.style.overflow=''; }
+/* HEADER SCROLL STATE · V1.7 · soft shadow + slight shrink once scrolled (audit 2.0 navbar polish) */
+(function(){ const h=document.querySelector('.header'); if(!h) return; const onScroll=()=>h.classList.toggle('scrolled', window.scrollY > 8); window.addEventListener('scroll', onScroll, {passive:true}); onScroll(); })();
 /* ============ UNIFIED NOTIFY ============
    One component, two modes:
      · kind:'cart'   → product thumbnail + name + meta + "View basket" action
@@ -4094,7 +4150,7 @@ function pCardHTML(p, skuTog, skuColour){
   const comingBadge = p.comingSoon ? '<span class="p-badge p-badge-soon">Coming soon</span>' : '';
   const badge = p.comingSoon
     ? comingBadge
-    : (p.featured ? '<span class="p-badge">Most loved</span>' : (p.oldPrice ? '<span class="p-badge">Save £'+(p.oldPrice-p.price)+'</span>' : (p.cat==='kit' ? '<span class="p-badge">Kit</span>' : '')));
+    : (p.best ? '<span class="p-badge p-badge-best">Bestseller</span>' : (p.featured ? '<span class="p-badge">Most loved</span>' : (p.oldPrice ? '<span class="p-badge">Save £'+(p.oldPrice-p.price)+'</span>' : (p.cat==='kit' ? '<span class="p-badge">Kit</span>' : ''))));
   const klarna = (!p.comingSoon && cardPrice >= 30) ? '<span class="klarna">or 3× £'+(cardPrice/3).toFixed(2)+' Klarna</span>' : '';
   const dots = (p.swatches||[]).slice(0,4).map(s => '<span class="sw-dot" style="background:'+swatchHex[s]+'"></span>').join('');
   // Quality chips · render close to title for trust at a glance. skuTog wins; else the style's own TOG.
