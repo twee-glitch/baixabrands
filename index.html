@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<!-- TotnKids prototype · V1.5 · locked 2026-05-21 · Companion to Brand Identity Guidelines V1.4 + Communication Playbook V1.0.
+<!-- TotnKids prototype · V1.7 · Companion to Brand Identity Guidelines V1.4 + Communication Playbook V1.0.
+     V1.7 (2026-06-01) = Audit 2.0 (Abdul) CRO pass: hero social proof softened ("Loved by UK parents"), slide-2 CTA
+     de-jargoned to "What should my baby wear?"; PDP trust stack completed (★ 4.9 rated badge, 2×2 layout) + new
+     "TOG & room temperature" accordion chart; FAQ page gained a support-reassurance block (reply time / order
+     tracking / returns + quick links); a body-level floating cart reminder (#cartRemind) nudges browsers with items
+     in the basket (hidden on checkout, dismissible, re-arms on each add); plus a 34-fix grammar/missing-space sweep.
      V1.5 (2026-05-21) = PDP purchase dropdown moved to just above the Add button; Cloud Cream colourway retired in
      favour of Soft Blush (existing palette only — a brief "Moonlight" new-colour attempt was reverted); Shop rebuilt
      as a single exploded colour×TOG SKU wall (no Style/SKU toggle, neutral "Sort by", each card colour-tinted, every
@@ -248,6 +253,19 @@ input,select,textarea{font:inherit}
 }
 /* ≥67.5rem (~1080px) · blur the ghost button where GPU compositing is reliable */
 @media (min-width:67.5rem){.hero .btn-ghost{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}}
+
+/* CART REMINDER · floating nudge · mobile-first · body-level fixed (audit 2.0) */
+.cart-remind{position:fixed;top:70px;right:12px;left:auto;z-index:150;display:flex;align-items:center;gap:10px;max-width:min(280px,calc(100vw - 24px));padding:11px 12px 11px 14px;background:var(--pine-deep);color:var(--cream-warm);border-radius:var(--pill);box-shadow:0 18px 44px -14px rgba(44,44,44,0.5);cursor:pointer;opacity:0;transform:translateY(-10px) scale(.96);pointer-events:none;transition:opacity .35s var(--ease),transform .35s var(--ease)}
+.cart-remind.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.cart-remind .cr-icon{flex:0 0 auto;display:inline-flex;color:var(--clay-soft)}
+.cart-remind .cr-text{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.cart-remind .cr-line1{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,237,223,0.7);font-weight:600}
+.cart-remind .cr-line2{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cart-remind .cr-cta{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--cream-warm);border-bottom:1px solid rgba(247,237,223,0.45);padding-bottom:1px;margin-left:2px}
+.cart-remind .cr-close{flex:0 0 auto;width:22px;height:22px;margin-left:2px;border:none;background:rgba(247,237,223,0.12);color:var(--cream-warm);border-radius:var(--pill);font-size:15px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.cart-remind .cr-close:hover{background:rgba(247,237,223,0.22)}
+@media (min-width:600px){.cart-remind{top:88px;right:20px;gap:12px;padding:12px 14px 12px 16px}}
+@media (prefers-reduced-motion:reduce){.cart-remind{transition:opacity .2s}}
 
 /* CART DRAWER,premium, high-conversion */
 .cart-overlay{position:fixed;inset:0;background:rgba(44,44,44,0.55);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -1284,7 +1302,7 @@ input,select,textarea{font:inherit}
 .pdp-help em{color:var(--clay)}
 /* MOBILE-FIRST · PDP trust row · single column on phones (each item is short, two-up wraps cleanly at tablet) */
 .pdp-trust{display:grid;grid-template-columns:1fr;gap:10px;padding:18px 0;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);margin-bottom:24px}
-@media (min-width:520px){.pdp-trust{grid-template-columns:repeat(3,1fr);gap:12px;padding:20px 0}}
+@media (min-width:520px){.pdp-trust{grid-template-columns:repeat(2,1fr);gap:12px;padding:20px 0}}
 .pdp-trust-item{font-size:11px;color:var(--ink-mute);line-height:1.6;font-weight:500}
 .pdp-trust-item strong{display:block;font-family:var(--font-display);font-weight:500;font-size:14px;color:var(--pine-deep);margin-bottom:2px}
 .pdp-acc-item{border-bottom:1px solid var(--hairline)}
@@ -1294,6 +1312,15 @@ input,select,textarea{font:inherit}
 .pdp-acc-body{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
 .pdp-acc-item.open .pdp-acc-body{max-height:400px}
 .pdp-acc-body-inner{padding:0 0 18px;color:var(--ink-soft);font-size:14.5px;line-height:1.7}
+.pdp-togchart{border:1px solid var(--hairline-soft);border-radius:var(--r-sm);overflow:hidden;margin:2px 0 6px}
+.pdp-togchart .tc-row{display:grid;grid-template-columns:64px 1fr;gap:4px 12px;padding:10px 12px;border-bottom:1px solid var(--hairline-soft);align-items:baseline}
+.pdp-togchart .tc-row:last-child{border-bottom:none}
+.pdp-togchart .tc-row.head{background:var(--cream-warm);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-mute);font-weight:600;grid-template-columns:64px 1fr}
+.pdp-togchart .tc-tog{font-family:var(--font-display);font-weight:500;font-size:14px;color:var(--pine-deep)}
+.pdp-togchart .tc-detail{display:flex;flex-direction:column;gap:1px}
+.pdp-togchart .tc-temp{font-size:13px;color:var(--pine-deep);font-weight:500}
+.pdp-togchart .tc-layer{font-size:12px;color:var(--ink-mute)}
+@media (min-width:480px){.pdp-togchart .tc-detail{flex-direction:row;align-items:baseline;gap:10px}.pdp-togchart .tc-temp{min-width:88px}}
 /* Tablet+: looser spacing, but still single column until desktop */
 @media (min-width:680px){
   .pdp{padding:32px var(--gutter) 72px;gap:40px}
@@ -1635,6 +1662,17 @@ input,select,textarea{font:inherit}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
 .faq-item.open .faq-a{max-height:400px}
 .faq-a-inner{padding:0 0 18px;color:var(--ink-soft);font-size:14.5px;line-height:1.75}
+.faq-support{max-width:880px;margin:0 auto;padding:0 var(--gutter) 100px}
+.faq-support-inner{background:var(--cream-warm);border:1px solid var(--hairline-soft);border-radius:var(--r-lg);padding:28px 24px}
+.faq-support h3{font-family:var(--font-display);font-weight:500;font-size:19px;color:var(--pine-deep);margin-bottom:6px}
+.faq-support .lede{color:var(--ink-soft);font-size:14.5px;line-height:1.7;margin-bottom:22px;max-width:560px}
+.faq-support-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:22px}
+@media (min-width:560px){.faq-support-grid{grid-template-columns:repeat(3,1fr);gap:20px}}
+.faq-support-grid .fs-item strong{display:block;font-family:var(--font-display);font-weight:500;font-size:15px;color:var(--pine-deep);margin-bottom:4px}
+.faq-support-grid .fs-item span{font-size:13px;color:var(--ink-mute);line-height:1.6}
+.faq-support-grid .fs-item a{color:var(--clay);border-bottom:1px solid var(--clay);cursor:pointer}
+.faq-support-links{display:flex;flex-wrap:wrap;gap:10px 20px;border-top:1px solid var(--hairline-soft);padding-top:18px;font-size:13.5px}
+.faq-support-links a{color:var(--clay);cursor:pointer;font-weight:500}
 
 /* REVIEWS AGGREGATE PAGE */
 .rev-page-head{max-width:var(--max-w);margin:0 auto;padding:60px var(--gutter) 40px;text-align:center}
@@ -1935,7 +1973,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
         <div class="hero-overlay"></div>
         <div class="hero-grid">
           <div class="hero-content">
-            <div class="hero-eyebrow"><span class="dot"></span> Designed in London · Loved by 247 UK parents</div>
+            <div class="hero-eyebrow"><span class="dot"></span> Designed in London · Loved by UK parents</div>
             <h1 class="t-display">Bamboo sleepwear<br />for <em>safer UK nights.</em></h1>
             <p class="hero-tagline">Designed for their skin. Perfected for your peace. TOG-rated bamboo from £22, dispatched from London.</p>
             <div class="hero-cta">
@@ -1963,7 +2001,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
             <p class="hero-tagline">First nights home. A cold-snap winter. A hot August nursery. A custom bundle of your own. Four entry points, one quiet wardrobe.</p>
             <div class="hero-cta">
               <button class="btn" onclick="event.stopPropagation();goto('moment')"><span>Shop by moment</span><span class="btn-arrow">→</span></button>
-              <button class="btn btn-ghost" onclick="event.stopPropagation();goto('tool')"><span>Find your TOG</span></button>
+              <button class="btn btn-ghost" onclick="event.stopPropagation();goto('tool')"><span>What should my baby wear?</span></button>
             </div>
           </div>
         </div>
@@ -2680,10 +2718,11 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
 
       <div class="pdp-guarantee">
         <span class="gicon">✦</span>
-        <div><strong>"Sleep on it" guarantee</strong>,30-day free returns. If baby doesn't settle better, we refund.</div>
+        <div><strong>"Sleep on it" guarantee.</strong> 30-day free returns. If baby doesn't settle better, we refund.</div>
       </div>
 
       <div class="pdp-trust">
+        <div class="pdp-trust-item"><strong>★ 4.9 rated</strong>loved by UK parents</div>
         <div class="pdp-trust-item"><strong>Free delivery</strong>orders over £40</div>
         <div class="pdp-trust-item"><strong>30-day returns</strong>free, no questions</div>
         <div class="pdp-trust-item"><strong>BS EN 16781</strong>fully compliant</div>
@@ -2692,6 +2731,16 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       <div class="pdp-acc-item"><button class="pdp-acc-trigger" onclick="toggleAcc(this)">Fabric & Care<span class="pdp-acc-chev">▼</span></button><div class="pdp-acc-body"><div class="pdp-acc-body-inner" id="pdpAccFabric">Bamboo viscose against the skin, organic cotton for warmth. OEKO-TEX Standard 100, Class I certified. Machine wash at 30°C, low tumble dry, do not bleach. Becomes softer with every wash.</div></div></div>
       <div class="pdp-acc-item"><button class="pdp-acc-trigger" onclick="toggleAcc(this)">Sizing & Fit<span class="pdp-acc-chev">▼</span></button><div class="pdp-acc-body"><div class="pdp-acc-body-inner" id="pdpAccSize">UK sizing is weight-led. 0-3 Months fits babies 4–6kg (56–62cm). Snug at chest and shoulders, room at legs, hip-healthy IHDI cut. <a onclick="goto('sizing')" style="color:var(--clay);text-decoration:underline;cursor:pointer;">Full sizing guide →</a></div></div></div>
       <div class="pdp-acc-item"><button class="pdp-acc-trigger" onclick="toggleAcc(this)">Safer Sleep Guidance<span class="pdp-acc-chev">▼</span></button><div class="pdp-acc-body"><div class="pdp-acc-body-inner" id="pdpAccSafer">Use the swaddle only when your baby cannot yet roll from back to front. Transition to a sleep bag when rolling begins, typically around 3–4 months. Always place baby on their back to sleep, in a clear cot. <a onclick="goto('safer')" style="color:var(--clay);text-decoration:underline;cursor:pointer;">Read full guide →</a></div></div></div>
+      <div class="pdp-acc-item"><button class="pdp-acc-trigger" onclick="toggleAcc(this)">TOG &amp; room temperature<span class="pdp-acc-chev">▼</span></button><div class="pdp-acc-body"><div class="pdp-acc-body-inner">
+        <div class="pdp-togchart">
+          <div class="tc-row head"><span>TOG</span><span>Room &amp; layers</span></div>
+          <div class="tc-row"><span class="tc-tog">0.2</span><span class="tc-detail"><span class="tc-temp">24–27°C</span><span class="tc-layer">Bodysuit on its own</span></span></div>
+          <div class="tc-row"><span class="tc-tog">1.0</span><span class="tc-detail"><span class="tc-temp">20–24°C</span><span class="tc-layer">Bodysuit + a light layer</span></span></div>
+          <div class="tc-row"><span class="tc-tog">1.5</span><span class="tc-detail"><span class="tc-temp">18–22°C</span><span class="tc-layer">Long-sleeve + a layer</span></span></div>
+          <div class="tc-row"><span class="tc-tog">2.5</span><span class="tc-detail"><span class="tc-temp">16–20°C</span><span class="tc-layer">Long-sleeve + a warm layer</span></span></div>
+          <div class="tc-row"><span class="tc-tog">3.5</span><span class="tc-detail"><span class="tc-temp">below 16°C</span><span class="tc-layer">Full layer + a warm bag</span></span></div>
+        </div>
+        A baby is safer slightly cool than too warm. <a onclick="goto('tool')" style="color:var(--clay);text-decoration:underline;cursor:pointer;">What should my baby wear? →</a></div></div></div>
     </div>
   </div>
 
@@ -2722,7 +2771,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
         <div class="pdp-rev-photo"><div class="ph ph-oat"><span class="ph-tag">UGC</span><span class="ph-label">Macro of bamboo fold, parent hands holding.</span></div></div>
         <div class="stars">★ ★ ★ ★ ★</div>
         <h5>The softest fabric we own</h5>
-        <p class="qt">"I bought one to try and immediately ordered three more. The bamboo is unreal, likesilk but warmer. Washes brilliantly too, no pilling after 20+ washes."</p>
+        <p class="qt">"I bought one to try and immediately ordered three more. The bamboo is unreal, like silk but warmer. Washes brilliantly too, no pilling after 20+ washes."</p>
         <div class="fit-tag">Runs slightly small</div>
         <div class="fit-tag">3-month-old</div>
         <div class="by"><strong>Aisha N.</strong> <span>· London</span> <span class="verified">✓ Verified</span></div>
@@ -2844,13 +2893,13 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="page-head">
     <div class="crumb"><a onclick="goto('home')">Home</a> · <strong>Our Story</strong></div>
     <h1 class="t-display">A small brand,<br /><em>for the small hours.</em></h1>
-    <p class="sub">TotnKids was born one quiet night in London, andit's still being shaped, every day, by parents who care about how their babies sleep.</p>
+    <p class="sub">TotnKids was born one quiet night in London, and it's still being shaped, every day, by parents who care about how their babies sleep.</p>
   </div>
   <div class="editorial">
-    <p>I built TotnKids because the night I brought my first baby home, I realised how much I didn't know about sleep, andhow little anyone was telling me clearly. The labels were full of marketing. The advice was full of contradictions. And my baby was full of cries.</p>
+    <p>I built TotnKids because the night I brought my first baby home, I realised how much I didn't know about sleep, and how little anyone was telling me clearly. The labels were full of marketing. The advice was full of contradictions. And my baby was full of cries.</p>
     <p>So I started reading. I read the Lullaby Trust guidance, the NHS guidance, UNICEF UK. I read the textile standards. I called fabric mills. I talked to midwives. I learned about TOG, about bamboo viscose, about hip-healthy fit. And slowly, a brand took shape, a brand that does the reading, so parents can do the resting.</p>
     <div class="split-imgs">
-      <div class="ph ph-editorial"><span class="ph-tag">EDITORIAL</span><span class="ph-label">Founder portrait, warmafternoon light, calm interior.</span></div>
+      <div class="ph ph-editorial"><span class="ph-tag">EDITORIAL</span><span class="ph-label">Founder portrait, warm afternoon light, calm interior.</span></div>
       <div class="ph ph-cream"><span class="ph-tag">LIFESTYLE</span><span class="ph-label">Hands folding bamboo swaddle, soft natural light.</span></div>
     </div>
     <p class="pull">"We don't sell sleep. <em>We design the layer that lets it happen.</em>"</p>
@@ -2875,7 +2924,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       <div class="ph ph-cream"><span class="ph-tag">STUDIO</span><span class="ph-label">Layer stack, bodysuit, swaddle, sleep bag flat-laid.</span></div>
     </div>
     <h3>Why bamboo viscose?</h3>
-    <p>Bamboo viscose is breathable, hypoallergenic, and softer than cotton, particularlyimportant for skin that's still developing. It regulates temperature better than synthetics, holds dye in OEKO-TEX Class I non-toxic processes, and gets softer with every wash rather than rougher. Cotton stiffens. Bamboo settles in.</p>
+    <p>Bamboo viscose is breathable, hypoallergenic, and softer than cotton, particularly important for skin that's still developing. It regulates temperature better than synthetics, holds dye in OEKO-TEX Class I non-toxic processes, and gets softer with every wash rather than rougher. Cotton stiffens. Bamboo settles in.</p>
     <h3>Made by Thygesen, Vietnam</h3>
     <p>Thygesen Textile in Vietnam is one of the few facilities that combines fair-wage practice with the technical precision needed for medical-grade infant fabric standards. They've been making bamboo viscose for decades; we visit twice a year.</p>
   </div>
@@ -2886,7 +2935,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="page-head">
     <div class="crumb"><a onclick="goto('home')">Home</a> · <strong>The Science</strong></div>
     <h1 class="t-display">The science of <em>safer sleep,</em><br />in plain language.</h1>
-    <p class="sub">TOG, temperature, and why the maths matters more than the marketing. Everything we know about how babies sleep, andwhy we made TotnKids the way we did.</p>
+    <p class="sub">TOG, temperature, and why the maths matters more than the marketing. Everything we know about how babies sleep, and why we made TotnKids the way we did.</p>
   </div>
   <div class="editorial">
     <p>"What should my baby wear to sleep?" is the most common question new parents ask. The answer involves three things: room temperature, what baby is wearing underneath, and what's on top. Get the maths right and your baby is comfortable. Get it wrong and they're either too warm (the biggest risk factor in safer sleep guidance) or unsettled.</p>
@@ -2913,7 +2962,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       <button class="btn" onclick="goto('tool')"><span>Find out now</span><span class="btn-arrow">→</span></button>
     </div>
     <h3>Informed by, not endorsed by</h3>
-    <p>We follow the established guidance from the <strong>Lullaby Trust</strong>, the <strong>NHS</strong>, and <strong>UNICEF UK Baby Friendly</strong>. We don't claim endorsement, weencourage every parent to read their full guidance directly. Links to their official guidance are in our Safer Sleep section.</p>
+    <p>We follow the established guidance from the <strong>Lullaby Trust</strong>, the <strong>NHS</strong>, and <strong>UNICEF UK Baby Friendly</strong>. We don't claim endorsement, we encourage every parent to read their full guidance directly. Links to their official guidance are in our Safer Sleep section.</p>
   </div>
 </section>
 
@@ -2932,7 +2981,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       <div class="ico-item"><div class="ic">03</div><h4>Right room temp.</h4><p>16–20°C is ideal. Use the tool to match the right TOG.</p></div>
     </div>
     <p class="pull">"We don't claim endorsement. <em>We do follow the guidance.</em>"</p>
-    <p>For full, official safer sleep guidance, please visit <strong>The Lullaby Trust</strong> (lullabytrust.org.uk), the <strong>NHS</strong>, and <strong>UNICEF UK Baby Friendly</strong>. TotnKids is informed by these authorities, weare not endorsed by them, and we encourage every parent to read their full guidance directly.</p>
+    <p>For full, official safer sleep guidance, please visit <strong>The Lullaby Trust</strong> (lullabytrust.org.uk), the <strong>NHS</strong>, and <strong>UNICEF UK Baby Friendly</strong>. TotnKids is informed by these authorities, we are not endorsed by them, and we encourage every parent to read their full guidance directly.</p>
   </div>
 </section>
 
@@ -2991,7 +3040,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       <div class="ph ph-cream"><span class="ph-tag">STUDIO</span><span class="ph-label">First Nights Kit unboxed, swaddle, bodysuits, welcome card.</span></div>
     </div>
     <h3>The first-night essentials</h3>
-    <p>One bamboo swaddle in 1.0 TOG (the most common UK nursery range). Two long-sleeve bodysuits underneath, oneto wear, one to change into. A handwritten safer-sleep cheat sheet. That's it. Anything else is bonus.</p>
+    <p>One bamboo swaddle in 1.0 TOG (the most common UK nursery range). Two long-sleeve bodysuits underneath, one to wear, one to change into. A handwritten safer-sleep cheat sheet. That's it. Anything else is bonus.</p>
     <h3>Where to put baby down</h3>
     <p>On their back, in a clear cot, in your room for at least the first six months (per Lullaby Trust guidance). No loose bedding, no pillows, no soft toys. A fitted sheet and a sleep garment is everything.</p>
     <h3>The room</h3>
@@ -3001,7 +3050,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       <button class="btn" onclick="goto('product','first-nights')"><span>Shop the First Nights Kit · £52</span><span class="btn-arrow">→</span></button>
     </div>
     <h3>Free download: First Night Survival Guide</h3>
-    <p>We've put everything you need to know into a 12-page PDF,printable, written by midwives. Free, no email required (but feel free to subscribe for more).</p>
+    <p>We've put everything you need to know into a 12-page PDF, printable, written by midwives. Free, no email required (but feel free to subscribe for more).</p>
     <button class="btn btn-ghost" onclick="showToast('First Night PDF would download')"><span>Download PDF (12 pages)</span><span class="btn-arrow">↓</span></button>
   </div>
 </section>
@@ -3011,10 +3060,10 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="page-head">
     <div class="crumb"><a onclick="goto('home')">Home</a> · <strong>Sizing Guide</strong></div>
     <h1 class="t-display">Sizing,<br /><em>weight-led.</em></h1>
-    <p class="sub">Babies don't grow in months, theygrow in weight. Pick by your baby's current weight, not the label age.</p>
+    <p class="sub">Babies don't grow in months, they grow in weight. Pick by your baby's current weight, not the label age.</p>
   </div>
   <div class="editorial">
-    <p>If you take one thing from this page: <strong>sizing is weight-led, not age-led.</strong> A 3-month-old in the 90th centile can be wearing what some brands call "6 months." Don't fight that, usethe weight. Our sizing is consistent across swaddles, sleep bags, bodysuits and daywear.</p>
+    <p>If you take one thing from this page: <strong>sizing is weight-led, not age-led.</strong> A 3-month-old in the 90th centile can be wearing what some brands call "6 months." Don't fight that, use the weight. Our sizing is consistent across swaddles, sleep bags, bodysuits and daywear.</p>
     <div class="sizing-chart">
       <h3 style="margin-top:0;">TotnKids size chart</h3>
       <table class="sz-table">
@@ -3029,9 +3078,9 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
       </table>
     </div>
     <h3>How a TotnKids swaddle should fit</h3>
-    <p>Snug at the chest and shoulders (so baby can't slip down into it), with room at the legs and hips, hip-healthyIHDI-approved cut. The fabric should feel taut on the torso but the legs should be free to move in a natural frog-leg shape.</p>
+    <p>Snug at the chest and shoulders (so baby can't slip down into it), with room at the legs and hips, hip-healthy IHDI-approved cut. The fabric should feel taut on the torso but the legs should be free to move in a natural frog-leg shape.</p>
     <h3>When to size up</h3>
-    <p>When two of these are true: the cuffs of the bodysuit ride above the wrist, the swaddle feels tight across baby's chest when zipped, or you can no longer do up the bottom snaps. Don't wait for all three, bamboosoftens but doesn't stretch.</p>
+    <p>When two of these are true: the cuffs of the bodysuit ride above the wrist, the swaddle feels tight across baby's chest when zipped, or you can no longer do up the bottom snaps. Don't wait for all three, bamboo softens but doesn't stretch.</p>
     <p class="pull">"When in doubt, <em>weigh, don't guess.</em>"</p>
     <h3>Returns & exchanges</h3>
     <p>30-day free returns, no questions, including for fit. If you bought the wrong size, just message us with the order number and we'll send a pre-paid label. Full <a onclick="goto('shipping')" style="color:var(--clay);text-decoration:underline;cursor:pointer;">returns policy →</a></p>
@@ -3130,7 +3179,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="sub-cta">
     <span class="t-eyebrow">Three subscription kits</span>
     <h2 class="t-editorial" style="margin:14px 0 18px;">Find the one for <em>your stage.</em></h2>
-    <p style="color:var(--ink-soft);margin-bottom:32px;">Start at any stage. You can switch kits as baby grows, theyroll over automatically based on the size you set.</p>
+    <p style="color:var(--ink-soft);margin-bottom:32px;">Start at any stage. You can switch kits as baby grows, they roll over automatically based on the size you set.</p>
     <button class="btn" onclick="goto('shop')"><span>Choose a subscription kit</span><span class="btn-arrow">→</span></button>
     <p style="margin-top:24px;font-size:12px;color:var(--ink-mute);">First refresh ships in 3 months. Cancel anytime before then for free.</p>
   </div>
@@ -3151,7 +3200,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="rev-page-head">
     <div class="crumb"><a onclick="goto('home')">Home</a> · <strong>Reviews</strong></div>
     <h1 class="t-display" style="margin-top:18px;">From parents,<br /><em>about parents.</em></h1>
-    <p class="sub" style="margin-top:14px;">Every review is verified, weask for a name, city, and the product they bought. No fake gloss.</p>
+    <p class="sub" style="margin-top:14px;">Every review is verified, we ask for a name, city, and the product they bought. No fake gloss.</p>
     <div class="rev-stats">
       <div class="rev-stat"><div class="num">4.9</div><div class="lbl">Average rating</div></div>
       <div class="rev-stat"><div class="num">247</div><div class="lbl">Verified reviews</div></div>
@@ -3188,9 +3237,26 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="page-head">
     <div class="crumb"><a onclick="goto('home')">Home</a> · <strong>FAQ</strong></div>
     <h1 class="t-display">Questions,<br /><em>answered honestly.</em></h1>
-    <p class="sub">Real questions from real parents. If yours isn't here, drop us a line, weread every email.</p>
+    <p class="sub">Real questions from real parents. If yours isn't here, drop us a line, we read every email.</p>
   </div>
   <div class="faq-list" id="faqList"></div>
+  <div class="faq-support">
+    <div class="faq-support-inner">
+      <h3>Still need a hand?</h3>
+      <p class="lede">We're a small London team and we read every message ourselves. No bots, no ticket queues.</p>
+      <div class="faq-support-grid">
+        <div class="fs-item"><strong>Replies within one working day</strong><span>Monday to Friday, often much sooner. Email <a href="mailto:hello@totnkids.com">hello@totnkids.com</a>.</span></div>
+        <div class="fs-item"><strong>Track your order</strong><span>Every order ships with Royal Mail Tracked. We email your tracking link the moment it's dispatched.</span></div>
+        <div class="fs-item"><strong>Returns &amp; exchanges</strong><span>Free 30-day returns with a pre-paid label. Just reply to your order email with the order number.</span></div>
+      </div>
+      <div class="faq-support-links">
+        <a onclick="goto('shipping')">Shipping &amp; Returns</a>
+        <a onclick="goto('care')">Care &amp; Washing</a>
+        <a onclick="goto('sizing')">Sizing Guide</a>
+        <a onclick="goto('tool')">What should my baby wear?</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- CARE -->
@@ -3198,21 +3264,21 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="page-head">
     <div class="crumb"><a onclick="goto('home')">Home</a> · <strong>Care & Washing</strong></div>
     <h1 class="t-display">Care for them,<br /><em>they'll last.</em></h1>
-    <p class="sub">Bamboo viscose gets softer with every wash, ifyou treat it kindly. Here's how.</p>
+    <p class="sub">Bamboo viscose gets softer with every wash, if you treat it kindly. Here's how.</p>
   </div>
   <div class="editorial">
     <h3>Machine washing</h3>
-    <p>Wash at 30°C with a gentle detergent. Skip the fabric softener, itcoats the fibres and reduces breathability. Wash with similar colours; the natural dyes are stable but the first wash may release a tiny amount of pigment.</p>
+    <p>Wash at 30°C with a gentle detergent. Skip the fabric softener, it coats the fibres and reduces breathability. Wash with similar colours; the natural dyes are stable but the first wash may release a tiny amount of pigment.</p>
     <h3>Drying</h3>
-    <p>Low-tumble or air-dry. Bamboo dries faster than cotton, so a short tumble is usually enough. Avoid direct sunlight on dyed pieces, itfades the soft tones over time.</p>
+    <p>Low-tumble or air-dry. Bamboo dries faster than cotton, so a short tumble is usually enough. Avoid direct sunlight on dyed pieces, it fades the soft tones over time.</p>
     <h3>Storage</h3>
-    <p>Fold rather than hang to preserve shape. Store in a cool, dry place. Avoid plastic bags long-term, bambooprefers to breathe.</p>
+    <p>Fold rather than hang to preserve shape. Store in a cool, dry place. Avoid plastic bags long-term, bamboo prefers to breathe.</p>
     <h3>Stain treatment</h3>
     <p>Treat stains within 24 hours with cold water and a small amount of mild detergent. Avoid bleach. For stubborn stains, a 30-minute soak in cool water with a gentle pre-wash is usually enough.</p>
     <h3>What not to do</h3>
     <ul style="padding-left:20px;color:var(--ink-soft);font-size:17px;line-height:1.85;margin-bottom:24px;">
-      <li>Don't wash hotter than 40°C, itweakens the fibres.</li>
-      <li>Don't bleach, itstrips colour and weakens fabric.</li>
+      <li>Don't wash hotter than 40°C, it weakens the fibres.</li>
+      <li>Don't bleach, it strips colour and weakens fabric.</li>
       <li>Don't iron the printed/embroidered details directly.</li>
       <li>Don't dry-clean, the chemicals are too harsh for bamboo.</li>
     </ul>
@@ -3229,17 +3295,17 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   </div>
   <div class="editorial">
     <h3>UK delivery</h3>
-    <p>Royal Mail Tracked 48,2-3 working days. £4.95 standard, free on orders over £40. Orders placed before 2pm Monday–Friday ship the same day. We don't ship on Sundays or UK bank holidays.</p>
+    <p>Royal Mail Tracked 48, 2-3 working days. £4.95 standard, free on orders over £40. Orders placed before 2pm Monday–Friday ship the same day. We don't ship on Sundays or UK bank holidays.</p>
     <h3>EU and international</h3>
     <p>Currently UK only at launch. EU shipping (Ireland, France, Germany, Netherlands) opens in November 2026. Sign up to the Founding 100 list for early access.</p>
     <h3>Free 30-day returns</h3>
-    <p>Not right? Wrong size? Just not the colour you imagined? Send it back within 30 days for a full refund, freepre-paid Royal Mail label, no questions. Email <strong>hello@totnkids.com</strong> with your order number and we'll send the label.</p>
+    <p>Not right? Wrong size? Just not the colour you imagined? Send it back within 30 days for a full refund, free pre-paid Royal Mail label, no questions. Email <strong>hello@totnkids.com</strong> with your order number and we'll send the label.</p>
     <h3>"Sleep on it" guarantee</h3>
     <p>If your baby doesn't settle better in their first week with us, message us and we'll refund the full purchase, keep the swaddle. We back this because we believe the layering works; we'd rather know if it doesn't.</p>
     <h3>Gift returns</h3>
-    <p>Gifts get a 60-day return window, twicethe standard. Recipient just emails us with the order number on the packing slip and we sort it.</p>
+    <p>Gifts get a 60-day return window, twice the standard. Recipient just emails us with the order number on the packing slip and we sort it.</p>
     <h3>Lost or damaged</h3>
-    <p>If your parcel arrives damaged or doesn't arrive at all, email us within 14 days and we'll either resend or refund, whicheveryou'd rather.</p>
+    <p>If your parcel arrives damaged or doesn't arrive at all, email us within 14 days and we'll either resend or refund, whichever you'd rather.</p>
   </div>
 </section>
 
@@ -3308,6 +3374,14 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   </div>
 </footer>
 
+<!-- CART REMINDER · body-level floating nudge · shown when basket has items and drawer is closed (audit 2.0) -->
+<div class="cart-remind" id="cartRemind" role="button" tabindex="0" aria-label="View your basket" onclick="openCart()">
+  <span class="cr-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-2 10H8L6 6Z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.1"/><circle cx="17" cy="20" r="1.1"/></svg></span>
+  <span class="cr-text"><span class="cr-line1" id="cartRemindLine">In your basket</span><span class="cr-line2" id="cartRemindSub">1 item · £42</span></span>
+  <span class="cr-cta">View <span aria-hidden="true">→</span></span>
+  <button class="cr-close" aria-label="Dismiss" onclick="event.stopPropagation();dismissCartRemind()">×</button>
+</div>
+
 <!-- CART DRAWER · premium high-conversion -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <div class="psheet-ov" id="pSheetOv" onclick="closeAddSheet()"></div>
@@ -3351,7 +3425,7 @@ footer{background:var(--pine-deep);color:var(--cream);padding:var(--section-pad)
   <div class="modal">
     <span class="moon moon-lg moon-breathe"><svg viewBox="0 0 100 100"><g fill="none" stroke="#BC7D5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M 70 22 C 30 22, 30 78, 70 78"/><path d="M 44 46 Q 47 42 50 46" stroke-width="1.6"/><path d="M 45 60 Q 48.5 64 52 60" stroke-width="1.6"/></g><circle cx="56" cy="56" r="3" fill="#D8B4A0" opacity=".5"/></svg></span>
     <h2 class="t-editorial">Order placed, <em>thank you.</em></h2>
-    <p>This is a prototype, nopayment has been taken. A note has been sent to your inbox.</p>
+    <p>This is a prototype, no payment has been taken. A note has been sent to your inbox.</p>
     <button class="btn" onclick="closeOrderModal()"><span>Continue</span></button>
   </div>
 </div>
@@ -3482,7 +3556,7 @@ function goto(page, filter, extra, extra2){
   closeCart(); closeMobileNav();
 }
 function openCart(){ document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartDrawer').classList.add('open'); document.body.style.overflow='hidden'; updateCart(); }
-function closeCart(){ document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); document.body.style.overflow=''; }
+function closeCart(){ document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); document.body.style.overflow=''; refreshCartRemind(); }
 function goCheckout(){ if(cart.length===0){ showToast('Your basket is empty'); return; } closeCart(); goto('checkout'); }
 function openMobileNav(){ document.getElementById('mnav').classList.add('open'); document.body.style.overflow='hidden'; }
 function closeMobileNav(){ document.getElementById('mnav').classList.remove('open'); document.body.style.overflow=''; }
@@ -3776,6 +3850,7 @@ function updateCart(){
     b.classList.remove('pulse');
     requestAnimationFrame(() => b.classList.add('pulse'));
     setTimeout(() => b.classList.remove('pulse'), 800);
+    window._cartRemindDismissed = false; // a fresh add re-arms the reminder
   }
   window._prevCartCount = count;
   const headCount = document.getElementById('cartHeadCount'); if(headCount) headCount.textContent = count;
@@ -3873,6 +3948,30 @@ function updateCart(){
       prog.innerHTML = '<div class="cp-row '+close+'"><div class="cp-copy"><strong>Add £'+remain.toFixed(2)+' for free Royal Mail Tracked delivery</strong><span>'+(remain <= 10 ? 'Almost there. A bodysuit (£22) gets you over the line.' : 'Free UK shipping on baskets over £40.')+'</span></div></div><div class="bar"><div class="bar-fill" style="width:'+pct+'%"></div></div>';
     }
   }
+  refreshCartRemind();
+}
+
+/* CART REMINDER · floating nudge controller (audit 2.0) */
+function refreshCartRemind(){
+  const el = document.getElementById('cartRemind');
+  if(!el) return;
+  const count = cart.reduce((s,c) => s + c.qty, 0);
+  const subtotal = cart.reduce((s,c) => s + c.price * c.qty, 0);
+  const drawerOpen = document.getElementById('cartDrawer').classList.contains('open');
+  const activePage = document.querySelector('.page.active');
+  const onCheckout = activePage && activePage.dataset.page === 'checkout';
+  if(count > 0 && !drawerOpen && !onCheckout && !window._cartRemindDismissed){
+    const sub = document.getElementById('cartRemindSub');
+    if(sub) sub.textContent = count + (count === 1 ? ' item' : ' items') + ' · £' + (Math.round(subtotal*100)/100);
+    el.classList.add('show');
+  } else {
+    el.classList.remove('show');
+  }
+}
+function dismissCartRemind(){
+  window._cartRemindDismissed = true;
+  const el = document.getElementById('cartRemind');
+  if(el) el.classList.remove('show');
 }
 
 /* PEEK CROSS-SELL · horizontal scroll-snap, 1 full + ~30% next visible */
@@ -5392,7 +5491,7 @@ function renderBlog(){
 /* ============ REVIEWS AGGREGATE ============ */
 const aggReviews = [
   { stars:5, head:'The softest thing we own', qt:'Honestly the softest fabric I\'ve ever felt against my baby\'s skin. We sleep through the night now, mostly.', name:'Sarah M.', city:'London', prod:'The Swaddle Up' },
-  { stars:5, head:'Finally, clearanswers', qt:'The layering tool changed everything. I finally know what to dress her in for sleep. The bamboo is dreamy and washes beautifully.', name:'Priya K.', city:'Manchester', prod:'Every Night Kit' },
+  { stars:5, head:'Finally, clear answers', qt:'The layering tool changed everything. I finally know what to dress her in for sleep. The bamboo is dreamy and washes beautifully.', name:'Priya K.', city:'Manchester', prod:'Every Night Kit' },
   { stars:5, head:'The gift everyone asks about', qt:'Bought the First Nights Kit for my sister\'s baby shower. She texted from the hospital saying it was the best thing in the bag.', name:'James E.', city:'Edinburgh', prod:'First Nights Kit' },
   { stars:5, head:'Sleeping through (mostly) since night one', qt:'My daughter is 7 weeks and we\'d been getting 2-hour stretches. First night in The Swaddle Up she did 4 hours. Three weeks in we\'re at 6.', name:'Emma R.', city:'Brighton', prod:'The Swaddle Up' },
   { stars:5, head:'Aisha\'s third order', qt:'I bought one to try and immediately ordered three more. The bamboo is unreal, like silk but warmer. Washes brilliantly, no pilling.', name:'Aisha N.', city:'London', prod:'The Soother' },
@@ -5432,24 +5531,24 @@ const faqs = [
     { q:'Will the colour fade?', a:'The natural dyes are stable but avoid direct sunlight when drying and skip bleach. After 50+ washes our pieces look almost identical to brand new.' }
   ]},
   { cat:'TOG & Safer Sleep', items:[
-    { q:'What\'s a TOG rating?', a:'Thermal Overall Grade, howmuch warmth a garment provides. 0.5 = lightest, 2.5 = warmest. Match to your nursery temperature, not the season. Try our tool for a personalised recommendation.' },
+    { q:'What\'s a TOG rating?', a:'Thermal Overall Grade, how much warmth a garment provides. 0.5 = lightest, 2.5 = warmest. Match to your nursery temperature, not the season. Try our tool for a personalised recommendation.' },
     { q:'What TOG do I need year-round?', a:'1.0 TOG suits most UK nurseries (20–24°C). 3.5 TOG for deep winter and 0.2 TOG for hot summers; 1.5 and 2.5 fill the in-between. The Every Night Kit covers two ratings.' },
     { q:'When do I move from swaddle to sleep bag?', a:'When baby starts rolling, typically 3–4 months. Always follow Lullaby Trust guidance. Our Convertible Sleep Bag is designed for this transition.' }
   ]},
   { cat:'Delivery & Returns', items:[
-    { q:'How long does delivery take?', a:'Royal Mail Tracked 48,2-3 working days. Orders before 2pm ship same day. Free on orders over £40, £4.95 otherwise.' },
+    { q:'How long does delivery take?', a:'Royal Mail Tracked 48, 2-3 working days. Orders before 2pm ship same day. Free on orders over £40, £4.95 otherwise.' },
     { q:'Can I return after washing?', a:'For fit/size issues yes, within 30 days. We just ask the piece is washed once before return (it\'s more hygienic for us to refurbish).' },
     { q:'Do you ship internationally?', a:'UK only at launch. EU shipping (Ireland, France, Germany, Netherlands) opens November 2026. Join the Founding 100 for early access.' }
   ]},
   { cat:'Subscription & Bundles', items:[
     { q:'How does Subscribe & Save work?', a:'Pick a kit, choose a refresh cadence (default 3 months), and we ship a new kit in the next size automatically. Always 10% off, skip or cancel anytime, no fees.' },
-    { q:'Can I change kits mid-subscription?', a:'Yes, switchbetween First Nights / Every Night / Growing Nights any time from your account. Useful as baby grows.' },
+    { q:'Can I change kits mid-subscription?', a:'Yes, switch between First Nights / Every Night / Growing Nights any time from your account. Useful as baby grows.' },
     { q:'How much does the Build-a-Kit discount save?', a:'Tiered: 2 pieces save 10%, 3-4 pieces save 15%, 5+ pieces save 20%. Mix any combination from the collection. Kits and moment bundles carry their own fixed savings shown on each PDP. Subscription stacks with the Build-a-Kit discount.' }
   ]},
   { cat:'Gifting', items:[
-    { q:'Can I send a gift to someone else\'s address?', a:'Yes, atcheckout, add their address as the delivery address and leave a gift message. Packing slip has no price.' },
+    { q:'Can I send a gift to someone else\'s address?', a:'Yes, at checkout, add their address as the delivery address and leave a gift message. Packing slip has no price.' },
     { q:'What does gift wrap include?', a:'Cream linen paper, hemp ribbon, handwritten welcome card with your message, kraft mailer. +£4 at checkout.' },
-    { q:'Returns on gifts?', a:'60-day return window for gifts, doublethe standard. Recipient just emails us with order number.' }
+    { q:'Returns on gifts?', a:'60-day return window for gifts, double the standard. Recipient just emails us with order number.' }
   ]}
 ];
 function renderFAQ(){
